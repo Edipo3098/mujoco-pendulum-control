@@ -1,0 +1,28 @@
+# Generated builds and results
+build/
+cmake-build-*/
+results/*
+!results/README.md
+MUJOCO_LOG.TXT
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Compiled outputs
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+
+# Local editor/OS files
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
