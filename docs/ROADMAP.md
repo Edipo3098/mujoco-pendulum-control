@@ -5,17 +5,12 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 ## 1. Primera simulación
 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
-- [x] Comprobar las versiones de las herramientas: MSVC 19.52.37029 para x64, CMake de Visual Studio 4.3.1-msvc1 y Ninja 1.13.2.
-- [x] Comprobar Python 3.14.10 de 64 bits, pip 26.2.2 y disponibilidad de venv para el futuro análisis de resultados.
-- [ ] Validar una compilación C++ con MuJoCo, el enlace y la carga de la DLL.
 - [ ] Crear el modelo del carro y el péndulo en `models/`.
 - [ ] Definir masas, inercias, longitud, gravedad y unidades.
 - [ ] Comprobar los ejes y el significado de los ángulos.
 - [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
 - [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
-
-**Estado al 16 de noviembre de 2026:** entorno documentado y versiones comprobadas. La creación del modelo queda a cargo del autor. Todavía no se ha validado una compilación ni ejecutado la simulación del proyecto; el venv y sus dependencias de análisis siguen pendientes.
 
 **Criterio de avance:** puedes ejecutar la simulación desde cero y explicar cada coordenada. Todavía no necesitas un controlador.
 
