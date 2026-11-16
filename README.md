@@ -16,7 +16,7 @@ A hands-on control engineering project: model an underactuated cart-pole in MuJo
 
 An inverted pendulum on a moving cart, actuated by a horizontal force on the cart. The pendulum joint is unactuated.
 
-Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` at the upright equilibrium. Coordinate signs, physical parameters and units must be checked against the MuJoCo model before designing a controller.
+Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` at the downward position and positive angles counterclockwise in the x-right/y-up plane. The upright position is `theta = pi` modulo `2*pi`. See [model conventions](docs/theory/model.md). Coordinate signs, physical parameters and units must be checked against the MuJoCo model before designing a controller.
 
 ## Learning roadmap
 

@@ -2,6 +2,38 @@
 
 <!-- Añade aquí tu desarrollo matemático. Para ecuaciones centradas utiliza bloques $$ ... $$. -->
 
+## Coordenadas y parámetros del modelo
+
+![Esquema del carro-péndulo y sus variables](../media/cart-pendulum-coordinates.png)
+
+La figura aportada por el autor define la notación. **Convención confirmada: $\theta=0$ corresponde al péndulo hacia abajo.** Se adopta el sentido positivo antihorario indicado en el texto de la figura, visto en el plano del dibujo.
+
+**Corrección pendiente de la figura:** el arco dibujado desde la vertical superior y su flecha horaria no representan esta convención. Para las ecuaciones prevalece la definición anterior.
+
+| Símbolo | Definición |
+| --- | --- |
+| $x$ | Posición horizontal del carro, positiva hacia la derecha |
+| $y$ | Eje vertical, positivo hacia arriba |
+| $\theta$ | Ángulo desde la vertical inferior, positivo antihorario |
+| $l$ | Longitud desde el pivote hasta la masa puntual del péndulo |
+| $m_c$ | Masa del carro |
+| $m_p$ | Masa del péndulo, concentrada en el extremo |
+| $u$ | Fuerza horizontal aplicada al carro, positiva hacia la derecha |
+
+Coordenadas generalizadas y orden del estado:
+
+$
+q=\begin{bmatrix}x\\\theta\end{bmatrix},
+\qquad
+s=\begin{bmatrix}x\\\theta\\\dot{x}\\\dot{\theta}\end{bmatrix}.
+$
+
+El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el carro. La articulación del péndulo no está actuada.
+
+Con esta convención, las posiciones verticales corresponden a $\theta=0$ (inferior) y $\theta=\pi$ (superior), módulo $2\pi$. En reposo, $\dot{x}=\dot{\theta}=0$; la comprobación de equilibrio deberá hacerse con las ecuaciones y el modelo MuJoCo.
+
+La masa puntual del péndulo está definida en la figura. Quedan pendientes los valores de masas y longitud, la gravedad, las unidades, el tratamiento de la masa/inercia de la barra, el rozamiento y los límites físicos. También falta contrastar ejes y signos con el modelo MJCF.
+
 ## Ejemplo de escritura matemática
 
 Este ejemplo solo muestra la sintaxis; no representa la dinámica del carro-péndulo.
