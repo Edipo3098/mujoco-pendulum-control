@@ -8,8 +8,6 @@
 
 La figura aportada por el autor define la notación. **Convención confirmada: $\theta=0$ corresponde al péndulo hacia abajo.** Se adopta el sentido positivo antihorario indicado en el texto de la figura, visto en el plano del dibujo.
 
-**Corrección pendiente de la figura:** el arco dibujado desde la vertical superior y su flecha horaria no representan esta convención. Para las ecuaciones prevalece la definición anterior.
-
 | Símbolo | Definición |
 | --- | --- |
 | $x$ | Posición horizontal del carro, positiva hacia la derecha |
@@ -19,6 +17,14 @@ La figura aportada por el autor define la notación. **Convención confirmada: $
 | $m_c$ | Masa del carro |
 | $m_p$ | Masa del péndulo, concentrada en el extremo |
 | $u$ | Fuerza horizontal aplicada al carro, positiva hacia la derecha |
+
+Tomando el pivote como referencia vertical ($y=0$), la posición de la masa puntual es:
+
+$$
+x_p=x+l\sin\theta,\qquad y_p=-l\cos\theta.
+$$
+
+Así, $\theta=\pi/2$ sitúa el péndulo horizontal hacia la derecha.
 
 Coordenadas generalizadas y orden del estado:
 

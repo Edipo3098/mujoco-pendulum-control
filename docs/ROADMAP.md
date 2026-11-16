@@ -7,7 +7,7 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
 - [ ] Crear el modelo del carro y el péndulo en `models/`.
 - [ ] Definir masas, inercias, longitud, gravedad y unidades. Notación de masas y longitud y masa puntual del péndulo documentadas en [model.md](theory/model.md); faltan valores, unidades y restantes hipótesis.
-- [ ] Comprobar los ejes y el significado de los ángulos. Convención matemática definida en [model.md](theory/model.md): x hacia la derecha, y hacia arriba y θ = 0 abajo, positivo antihorario; falta corregir el arco de la figura y contrastar con MuJoCo.
+- [ ] Comprobar los ejes y el significado de los ángulos. Convención matemática definida en [model.md](theory/model.md): x hacia la derecha, y hacia arriba y θ = 0 abajo, positivo antihorario; figura corregida y coherente con la convención; falta contrastar con MuJoCo.
 - [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
 - [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
