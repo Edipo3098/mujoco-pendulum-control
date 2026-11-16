@@ -22,11 +22,11 @@ La figura aportada por el autor define la notación. **Convención confirmada: $
 
 Coordenadas generalizadas y orden del estado:
 
-$
+$$
 q=\begin{bmatrix}x\\\theta\end{bmatrix},
 \qquad
 s=\begin{bmatrix}x\\\theta\\\dot{x}\\\dot{\theta}\end{bmatrix}.
-$
+$$
 
 El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el carro. La articulación del péndulo no está actuada.
 
