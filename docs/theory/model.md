@@ -4,7 +4,7 @@
 
 ## Coordenadas y parámetros del modelo
 
-![Esquema del carro-péndulo y sus variables](../media/cart-pendulum-coordinates.png)
+![Esquema del carro-péndulo y sus variables](../media/cart-pendulum-coordinates.png?v=fc411248)
 
 La figura aportada por el autor define la notación. **Convención confirmada: $\theta=0$ corresponde al péndulo hacia abajo.** Se adopta el sentido positivo antihorario indicado en el texto de la figura, visto en el plano del dibujo.
 
