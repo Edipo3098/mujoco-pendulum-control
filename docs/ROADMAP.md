@@ -2,18 +2,12 @@
 
 El objetivo es aprender implementando y explicar las decisiones con tus propias palabras. Cada etapa debe dejar una implementación pequeña, una comprobación y una nota sobre lo aprendido.
 
-El estado de cada etapa se mantiene en esta misma guía. La derivación matemática está documentada en [01 — Dynamic Models](theory/01-dynamic-models.md) y la preparación de herramientas en [ENVIRONMENT.md](ENVIRONMENT.md). Una casilla marcada indica solo la tarea descrita, no la validación completa de la etapa.
-
-**Estado al 19 de noviembre de 2026:** se ha completado la derivación analítica del modelo ideal no lineal, su linealización alrededor del equilibrio superior y el análisis de inestabilidad en lazo abierto mediante el método indirecto de Lyapunov. Hay parámetros numéricos nominales aún **sin validación** con MuJoCo. Ver [02 — Linearization and Lyapunov's Indirect Method](theory/02-linearization-and-stability.md).
-
 ## 1. Primera simulación
 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
 - [ ] Crear el modelo del carro y el péndulo en `models/`.
-- [x] Proponer **valores nominales provisionales y unidades** de masas, longitud y gravedad: [config/cartpole-parameters.yaml](../config/cartpole-parameters.yaml).
-- [ ] Contrastar la inercia, la geometría y los valores nominales con el futuro MJCF; aún no existe el modelo físico implementado.
-- [x] Definir la **convención matemática**: eje x hacia la derecha, y hacia arriba; θ = 0 abajo y positivo antihorario; θ = π arriba. Véase [01 — Dynamic Models](theory/01-dynamic-models.md).
-- [ ] Contrastar los ejes, el origen, el sentido del ángulo y la figura de coordenadas con el modelo MJCF real. La coherencia geométrica de la imagen requiere revisión independiente.
+- [ ] Definir masas, inercias, longitud, gravedad y unidades. Notación de masas y longitud, masa puntual del péndulo y dirección del vector de gravedad documentadas en [model.md](theory/model.md); faltan valores, unidades y restantes hipótesis.
+- [x] Comprobar los ejes y el significado de los ángulos en el modelo matemático. Convención matemática definida en [model.md](theory/model.md): x hacia la derecha, y hacia arriba y θ = 0 abajo, positivo antihorario; figura corregida y coherente con la convención; falta contrastar con MuJoCo.
 - [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
 - [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
@@ -24,7 +18,10 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 ## 2. Modelo dinámico
 
-**Resultado hasta ahora:** derivación simbólica completada para el Cart-Pole ideal, sin rozamiento, con barra rígida sin masa y masa puntual en el extremo. Está descrita paso a paso en [01 — Dynamic Models](theory/01-dynamic-models.md) (ecuaciones [1]–[30]). **La etapa 2 aún no está validada numéricamente.**
+- [ ] Derivar las ecuaciones y declarar las hipótesis: masa puntual o barra, rozamiento y ausencia/presencia de límites físicos. Avance: velocidades, energías cinética y potencial y lagrangiano desarrollados en [model.md](theory/model.md), con bloques numerados [1]–[9]. Pendientes: revisar el factor de longitud en la velocidad horizontal del bloque [4], la errata `\dot{x1}` en [6] y los cuadrados de velocidad de `Tp` y `Tc` en [7]; completar las hipótesis y obtener las ecuaciones de movimiento.
+- [x] Identificar las configuraciones de equilibrio y elegir una convención única para el estado. Orden del estado definido como [x, θ, x_dot, θ_dot]; posiciones inferior θ = 0 y superior θ = π documentadas, pendientes de verificar con las ecuaciones.
+- [ ] Comparar aceleraciones calculadas con las del simulador en varios estados.
+- [ ] Revisar conservación/disipación de energía con fuerza de entrada nula.
 
 - [x] Definir coordenadas generalizadas y orden del estado: `q = [x, θ]ᵀ`; `s = [x, θ, x_dot, theta_dot]ᵀ`, con entrada `u = F_x`.
 - [x] Derivar la cinemática: posiciones `x_p = x + l sin(θ)`, `y_p = -l cos(θ)` y las velocidades del carro y la masa puntual.
