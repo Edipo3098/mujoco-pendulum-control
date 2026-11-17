@@ -2,6 +2,8 @@
 
 El objetivo es aprender implementando y explicar las decisiones con tus propias palabras. Cada etapa debe dejar una implementación pequeña, una comprobación y una nota sobre lo aprendido.
 
+El avance documentado y las revisiones pendientes se recogen en el [registro de progreso](PROGRESS.md).
+
 ## 1. Primera simulación
 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
@@ -18,7 +20,7 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 ## 2. Modelo dinámico
 
-- [ ] Derivar las ecuaciones y declarar las hipótesis: masa puntual o barra, rozamiento y ausencia/presencia de límites físicos.
+- [ ] Derivar las ecuaciones y declarar las hipótesis: masa puntual o barra, rozamiento y ausencia/presencia de límites físicos. Avance: velocidades, energías cinética y potencial y lagrangiano desarrollados en [model.md](theory/model.md), con bloques numerados [1]–[9]. Pendientes: corregir las erratas registradas en [PROGRESS.md](PROGRESS.md), completar las hipótesis y obtener las ecuaciones de movimiento.
 - [ ] Identificar los equilibrios y elegir una convención única para el estado. Orden del estado definido como [x, θ, x_dot, θ_dot]; posiciones inferior θ = 0 y superior θ = π documentadas, pendientes de verificar con las ecuaciones.
 - [ ] Comparar aceleraciones calculadas con las del simulador en varios estados.
 - [ ] Revisar conservación/disipación de energía con fuerza de entrada nula.

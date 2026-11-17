@@ -1,13 +1,12 @@
-
 # Modelado matemático del carro-péndulo
 
-<!-- Añade aquí tu desarrollo matemático. Para ecuaciones centradas utiliza bloques $$ ... $$. -->
+Este documento presenta las convenciones del sistema y el desarrollo de su modelo matemático.
 
 ## Coordenadas y parámetros del modelo
 
 ![Esquema del carro-péndulo y sus variables](../media/cart-pendulum-coordinates.png?v=fc411248)
 
-La figura aportada por el autor define la notación. **Convención confirmada: $\theta=0$ corresponde al péndulo hacia abajo.** Se adopta el sentido positivo antihorario indicado en el texto de la figura, visto en el plano del dibujo.
+La figura resume los ejes y las variables utilizados. **Convención angular: $\theta=0$ corresponde al péndulo hacia abajo.** Se adopta el sentido positivo antihorario indicado en el texto de la figura, visto en el plano del dibujo.
 
 | Símbolo | Definición |
 | --- | --- |
@@ -21,6 +20,8 @@ La figura aportada por el autor define la notación. **Convención confirmada: $
 
 Tomando el pivote como referencia vertical ($y=0$), la posición de la masa puntual es:
 
+**Ecuación [1].**
+
 $$
 x_p=x+l\sin\theta,\qquad y_p=-l\cos\theta.
 $$
@@ -28,6 +29,8 @@ $$
 Así, $\theta=\pi/2$ sitúa el péndulo horizontal hacia la derecha.
 
 Coordenadas generalizadas y orden del estado:
+
+**Ecuación [2].**
 
 $$
 q=\begin{bmatrix}x\\\theta\end{bmatrix},
@@ -41,66 +44,89 @@ Con esta convención, las posiciones verticales corresponden a $\theta=0$ (infer
 
 La masa puntual del péndulo está definida en la figura. Quedan pendientes los valores de masas y longitud, la gravedad, las unidades, el tratamiento de la masa/inercia de la barra, el rozamiento y los límites físicos. También falta contrastar ejes y signos con el modelo MJCF.
 
-## Added by Fporras
-El vector de gravedades se define de la siguiente manera:
+## Aceleración de la gravedad
+
+El vector de aceleración gravitatoria se expresa en los ejes definidos anteriormente:
+
+**Ecuación [3].**
+
 $$
 g=\begin{bmatrix}0\\-g
 \end{bmatrix},
-
-
 $$
 
-\dot{x}  \dot{\theta}   \cos{\theta}   \sin{\theta}
+La notación $\dot{x}$ y $\dot{\theta}$ representa las derivadas temporales de las coordenadas generalizadas.
 
-## Dynamics analysis
-### Kinematics energy
+## Análisis dinámico
 
-First step is calculate velocity from both rigid bodies as follow
+### Energía cinética
+
+En primer lugar, se expresan las velocidades del carro y de la masa del péndulo:
+
+**Ecuación [4].**
 
 $$
-Vcar = \begin{bmatrix} \dot{x} \\ 0 \end{bmatrix}
+\begin{gathered}
+Vcar = \begin{bmatrix} \dot{x} \\ 0 \end{bmatrix} \\
 Vpole = \begin{bmatrix} \dot{x} + \dot{\theta}\cos{\theta} \\ l\dot{\theta}\sin{\theta}\end{bmatrix}
-
-$$
-Knowing Kinematics energy is described as, we continue calculate kinetic energy for the pole
-
+\end{gathered}
 $$
 
+La energía cinética se calcula a partir de la masa y del módulo de la velocidad:
+
+**Ecuación [5].**
+
+$$
 T =  \frac{1}{2}m||V||^2,
 $$
 
+**Ecuación [6].**
+
 $$
+\begin{gathered}
 Vp^2 =  \dot{x}^2  + (\dot{\theta}l\cos{\theta})^2 +  2\dot{x1}(\dot{\theta}l\cos{\theta})  + (\dot{\theta}l\sin{\theta})^2,\\
 Vp^2 =  \dot{x}^2  +  2\dot{x}(\dot{\theta}l\cos{\theta})  + (\dot{\theta}^2l^2),
+\end{gathered}
 $$
 
+**Ecuación [7].**
 
 $$
+\begin{gathered}
 Tp = \frac{1}{2}mp\dot{x} +  mp\dot{x}(\dot{\theta}l\cos{\theta})  + \frac{1}{2}mp(\dot{\theta}^2l^2), \\
-Tc =  \frac{1}{2}mc\dot{x}
-
+Tc =  \frac{1}{2}mc\dot{x} \\
 T = \frac{1}{2}(mc+mp)\dot{x}^2 +  mp\dot{x}\dot{\theta}l\cos{\theta}  + \frac{1}{2}mp(\dot{\theta}^2l^2),
+\end{gathered}
 $$
-Continue calculating Potencial energy
 
+### Energía potencial
+
+Tomando el nivel del pivote como referencia de altura, se expresan las contribuciones de energía potencial del carro y del péndulo:
+
+**Ecuación [8].**
 
 $$
+\begin{gathered}
 U = mgh,\\
 Uc = 0, \\
 Up = mpg(-l\cos{\theta})
-$$
-Continue calculating the lagrangian 
-
+\end{gathered}
 $$
 
+### Lagrangiano
+
+El lagrangiano se obtiene como la diferencia entre la energía cinética y la energía potencial:
+
+**Ecuación [9].**
+
+$$
+\begin{gathered}
 \mathcal{L} = T -U,\\
-
-\mathcal{L} = \frac{1}{2}(mc+mp)\dot{x}^2 +  mp\dot{x}\dot{\theta}l\cos{\theta}  + \frac{1}{2}mp(\dot{\theta}^2l^2) +mpg(l\cos{\theta}) 
-
+\mathcal{L} = \frac{1}{2}(mc+mp)\dot{x}^2 +  mp\dot{x}\dot{\theta}l\cos{\theta}  + \frac{1}{2}mp(\dot{\theta}^2l^2) +mpg(l\cos{\theta})
+\end{gathered}
 $$
 
-
-## Ejemplo de escritura matemática
+## Apéndice: ejemplos de escritura matemática
 
 Este ejemplo solo muestra la sintaxis; no representa la dinámica del carro-péndulo.
 
