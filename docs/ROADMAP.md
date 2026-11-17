@@ -2,14 +2,17 @@
 
 El objetivo es aprender implementando y explicar las decisiones con tus propias palabras. Cada etapa debe dejar una implementación pequeña, una comprobación y una nota sobre lo aprendido.
 
-El avance documentado y las revisiones pendientes se recogen en el [registro de progreso](PROGRESS.md).
+El estado de cada etapa se mantiene en esta misma guía. La derivación matemática está documentada en [model.md](theory/model.md) y la preparación de herramientas en [ENVIRONMENT.md](ENVIRONMENT.md). Una casilla marcada indica solo la tarea descrita, no la validación completa de la etapa.
+
+**Estado al 17 de noviembre de 2026:** se ha desarrollado analíticamente el modelo ideal no lineal hasta su representación explícita en espacio de estados. No se ha confirmado aún la ejecución ni la validación del modelo en MuJoCo.
 
 ## 1. Primera simulación
 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
 - [ ] Crear el modelo del carro y el péndulo en `models/`.
-- [ ] Definir masas, inercias, longitud, gravedad y unidades. Notación de masas y longitud y masa puntual del péndulo documentadas en [model.md](theory/model.md); faltan valores, unidades y restantes hipótesis.
-- [ ] Comprobar los ejes y el significado de los ángulos. Convención matemática definida en [model.md](theory/model.md): x hacia la derecha, y hacia arriba y θ = 0 abajo, positivo antihorario; figura corregida y coherente con la convención; falta contrastar con MuJoCo.
+- [ ] Fijar los **valores numéricos y unidades** de masas, longitud, gravedad e inercias para el MJCF. La notación, las hipótesis ideales (barra sin masa y masa puntual) y los parámetros simbólicos ya están documentados en [model.md](theory/model.md).
+- [x] Definir la **convención matemática**: eje x hacia la derecha, y hacia arriba; θ = 0 abajo y positivo antihorario; θ = π arriba. Véase [model.md](theory/model.md).
+- [ ] Contrastar los ejes, el origen, el sentido del ángulo y la figura de coordenadas con el modelo MJCF real. La coherencia geométrica de la imagen requiere revisión independiente.
 - [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
 - [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
@@ -20,12 +23,24 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 ## 2. Modelo dinámico
 
-- [ ] Derivar las ecuaciones y declarar las hipótesis: masa puntual o barra, rozamiento y ausencia/presencia de límites físicos. Avance: velocidades, energías cinética y potencial y lagrangiano desarrollados en [model.md](theory/model.md), con bloques numerados [1]–[9]. Pendientes: corregir las erratas registradas en [PROGRESS.md](PROGRESS.md), completar las hipótesis y obtener las ecuaciones de movimiento.
-- [ ] Identificar los equilibrios y elegir una convención única para el estado. Orden del estado definido como [x, θ, x_dot, θ_dot]; posiciones inferior θ = 0 y superior θ = π documentadas, pendientes de verificar con las ecuaciones.
-- [ ] Comparar aceleraciones calculadas con las del simulador en varios estados.
-- [ ] Revisar conservación/disipación de energía con fuerza de entrada nula.
+**Resultado hasta ahora:** derivación simbólica completada para el Cart-Pole ideal, sin rozamiento, con barra rígida sin masa y masa puntual en el extremo. Está descrita paso a paso en [model.md](theory/model.md) (ecuaciones [1]–[30]). **La etapa 2 aún no está validada numéricamente.**
 
-**Criterio de avance:** las diferencias entre el modelo matemático y MuJoCo están medidas y explicadas.
+- [x] Definir coordenadas generalizadas y orden del estado: `q = [x, θ]ᵀ`; `s = [x, θ, x_dot, theta_dot]ᵀ`, con entrada `u = F_x`.
+- [x] Derivar la cinemática: posiciones `x_p = x + l sin(θ)`, `y_p = -l cos(θ)` y las velocidades del carro y la masa puntual.
+- [x] Obtener y simplificar las energías cinética y potencial y el lagrangiano `L = T - U`.
+- [x] Aplicar Euler–Lagrange por separado a la traslación `x` y a la rotación `θ`, identificando `Q_x = u` y `Q_θ = 0`.
+- [x] Obtener las **dos ecuaciones de movimiento acopladas**, incluida la cancelación de los términos cruzados en la ecuación angular.
+- [x] Reorganizar el sistema en forma matricial `M(q) q_ddot + C(q,q_dot) q_dot = τ_g(q) + B u`; identificar la matriz de masas, una elección válida de matriz de velocidad, el vector gravitatorio y la distribución de entrada.
+- [x] Calcular el determinante, la adjunta y la inversa de `M(q)`; verificar algebraicamente su invertibilidad para `m_c, m_p, l > 0`.
+- [x] Despejar ambas aceleraciones mediante la multiplicación matricial y la simplificación de sus numeradores `N₁` y `N₂`.
+- [x] Expresar las **cuatro ecuaciones no lineales de primer orden** `s_dot = F(s,u)`.
+- [x] Identificar analíticamente las configuraciones de equilibrio inferior `θ = 0` y superior `θ = π` con velocidades y fuerza nulas (para `x = 0` como posición de referencia).
+- [ ] Determinar valores físicos del modelo y comprobar la correspondencia de masas, inercia, fuerzas, ejes, signos y longitudes con el MJCF. Un modelo MuJoCo con barra de masa/inercia no despreciable no tiene por qué reproducir exactamente las ecuaciones ideales.
+- [ ] Comparar las aceleraciones analíticas con las calculadas por MuJoCo en varios estados y entradas, con tolerancias y resultados reproducibles.
+- [ ] Comprobar conservación de energía cuando `u = 0` en el modelo ideal, y analizar pérdidas o diferencias numéricas cuando corresponda.
+- [ ] Documentar errores, discrepancias físicas y limitaciones del modelo a partir de esas pruebas.
+
+**Criterio de avance:** las aceleraciones y las propiedades energéticas calculadas con el modelo matemático se han contrastado con MuJoCo, y sus diferencias están medidas y explicadas. La derivación en papel **no equivale** a haber superado este criterio.
 
 ## 3. Estabilización local
 
