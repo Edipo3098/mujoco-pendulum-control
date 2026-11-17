@@ -1,3 +1,4 @@
+
 # Modelado matemático del carro-péndulo
 
 <!-- Añade aquí tu desarrollo matemático. Para ecuaciones centradas utiliza bloques $$ ... $$. -->
@@ -39,6 +40,65 @@ El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el 
 Con esta convención, las posiciones verticales corresponden a $\theta=0$ (inferior) y $\theta=\pi$ (superior), módulo $2\pi$. En reposo, $\dot{x}=\dot{\theta}=0$; la comprobación de equilibrio deberá hacerse con las ecuaciones y el modelo MuJoCo.
 
 La masa puntual del péndulo está definida en la figura. Quedan pendientes los valores de masas y longitud, la gravedad, las unidades, el tratamiento de la masa/inercia de la barra, el rozamiento y los límites físicos. También falta contrastar ejes y signos con el modelo MJCF.
+
+## Added by Fporras
+El vector de gravedades se define de la siguiente manera:
+$$
+g=\begin{bmatrix}0\\-g
+\end{bmatrix},
+
+
+$$
+
+\dot{x}  \dot{\theta}   \cos{\theta}   \sin{\theta}
+
+## Dynamics analysis
+### Kinematics energy
+
+First step is calculate velocity from both rigid bodies as follow
+
+$$
+Vcar = \begin{bmatrix} \dot{x} \\ 0 \end{bmatrix}
+Vpole = \begin{bmatrix} \dot{x} + \dot{\theta}\cos{\theta} \\ l\dot{\theta}\sin{\theta}\end{bmatrix}
+
+$$
+Knowing Kinematics energy is described as, we continue calculate kinetic energy for the pole
+
+$$
+
+T =  \frac{1}{2}m||V||^2,
+$$
+
+$$
+Vp^2 =  \dot{x}^2  + (\dot{\theta}l\cos{\theta})^2 +  2\dot{x1}(\dot{\theta}l\cos{\theta})  + (\dot{\theta}l\sin{\theta})^2,\\
+Vp^2 =  \dot{x}^2  +  2\dot{x}(\dot{\theta}l\cos{\theta})  + (\dot{\theta}^2l^2),
+$$
+
+
+$$
+Tp = \frac{1}{2}mp\dot{x} +  mp\dot{x}(\dot{\theta}l\cos{\theta})  + \frac{1}{2}mp(\dot{\theta}^2l^2), \\
+Tc =  \frac{1}{2}mc\dot{x}
+
+T = \frac{1}{2}(mc+mp)\dot{x}^2 +  mp\dot{x}\dot{\theta}l\cos{\theta}  + \frac{1}{2}mp(\dot{\theta}^2l^2),
+$$
+Continue calculating Potencial energy
+
+
+$$
+U = mgh,\\
+Uc = 0, \\
+Up = mpg(-l\cos{\theta})
+$$
+Continue calculating the lagrangian 
+
+$$
+
+\mathcal{L} = T -U,\\
+
+\mathcal{L} = \frac{1}{2}(mc+mp)\dot{x}^2 +  mp\dot{x}\dot{\theta}l\cos{\theta}  + \frac{1}{2}mp(\dot{\theta}^2l^2) +mpg(l\cos{\theta}) 
+
+$$
+
 
 ## Ejemplo de escritura matemática
 
