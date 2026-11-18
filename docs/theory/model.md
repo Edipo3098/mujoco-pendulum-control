@@ -33,9 +33,9 @@ Coordenadas generalizadas y orden del estado:
 **Ecuación [2].**
 
 $$
-q=\begin{bmatrix}x\\\theta\end{bmatrix},
+q=\begin{bmatrix}x\cr\theta\end{bmatrix},
 \qquad
-s=\begin{bmatrix}x\\\theta\\\dot{x}\\\dot{\theta}\end{bmatrix}.
+s=\begin{bmatrix}x\cr\theta\cr\dot{x}\cr\dot{\theta}\end{bmatrix}.
 $$
 
 El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el carro. La articulación del péndulo no está actuada.
@@ -51,7 +51,7 @@ El eje vertical es positivo hacia arriba. Denotamos por $g>0$ la magnitud de la 
 **Ecuación [3].**
 
 $$
-\mathbf{g}=\begin{bmatrix}0\\-g\end{bmatrix}.
+\mathbf{g}=\begin{bmatrix}0\cr-g\end{bmatrix}.
 $$
 
 ## Análisis dinámico
@@ -67,8 +67,8 @@ La posición del carro (representado a la altura del pivote) y la masa del pénd
 **Ecuación [4].**
 
 $$
-\mathbf r_c=\begin{bmatrix}x\\0\end{bmatrix},\qquad
-\mathbf r_p=\begin{bmatrix}x+l\sin\theta\\-l\cos\theta\end{bmatrix}.
+\mathbf r_c=\begin{bmatrix}x\cr0\end{bmatrix},\qquad
+\mathbf r_p=\begin{bmatrix}x+l\sin\theta\cr-l\cos\theta\end{bmatrix}.
 $$
 
 Derivando respecto al tiempo y aplicando la regla de la cadena:
@@ -76,9 +76,9 @@ Derivando respecto al tiempo y aplicando la regla de la cadena:
 **Ecuación [5].**
 
 $$
-\mathbf v_c=\begin{bmatrix}\dot{x}\\0\end{bmatrix},\qquad
+\mathbf v_c=\begin{bmatrix}\dot{x}\cr0\end{bmatrix},\qquad
 \mathbf v_p=\begin{bmatrix}
-\dot{x}+l\dot{\theta}\cos\theta\\[0pt]
+\dot{x}+l\dot{\theta}\cos\theta\cr
 l\dot{\theta}\sin\theta
 \end{bmatrix}.
 $$
@@ -156,10 +156,10 @@ $$
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot q_i}\right)
 -\frac{\partial\mathcal L}{\partial q_i}=Q_i,
 \qquad
-q=\begin{bmatrix}x\\\theta\end{bmatrix},
+q=\begin{bmatrix}x\cr\theta\end{bmatrix},
 \quad
-\begin{bmatrix}Q_x\\Q_\theta\end{bmatrix}
-=\begin{bmatrix}u\\0\end{bmatrix}.
+\begin{bmatrix}Q_x\crQ_\theta\end{bmatrix}
+=\begin{bmatrix}u\cr0\end{bmatrix}.
 $$
 
 No se aplica un par directamente al péndulo, por lo que $Q_\theta=0$.
@@ -284,7 +284,7 @@ $$
 \boxed{
 M(q)=
 \begin{bmatrix}
-m_c+m_p & m_pl\cos\theta\\[0pt]
+m_c+m_p & m_pl\cos\theta\cr
 m_pl\cos\theta & m_pl^2
 \end{bmatrix}
 }
@@ -302,13 +302,13 @@ $$
 \boxed{
 C(q,\dot q)=
 \begin{bmatrix}
-0 & -m_pl\dot{\theta}\sin\theta\\[0pt]
+0 & -m_pl\dot{\theta}\sin\theta\cr
 0 & 0
 \end{bmatrix},
 \qquad
 C(q,\dot q)\dot q=
 \begin{bmatrix}
--m_pl\dot{\theta}^2\sin\theta\\[0pt]
+-m_pl\dot{\theta}^2\sin\theta\cr
 0
 \end{bmatrix}
 }
@@ -326,7 +326,7 @@ $$
 \boxed{
 \tau_g(q)=
 \begin{bmatrix}
-0\\-m_pgl\sin\theta
+0\cr-m_pgl\sin\theta
 \end{bmatrix}
 }
 $$
@@ -337,7 +337,7 @@ La entrada es una fuerza horizontal aplicada al carro; el pivote no recibe un pa
 
 $$
 \boxed{
-B=\begin{bmatrix}1\\0\end{bmatrix},
+B=\begin{bmatrix}1\cr0\end{bmatrix},
 \qquad u=F_x.
 }
 $$
@@ -348,14 +348,14 @@ El modelo completo puede comprobarse multiplicando sus matrices:
 
 $$
 \begin{bmatrix}
-m_c+m_p & m_pl\cos\theta\\[0pt]
+m_c+m_p & m_pl\cos\theta\cr
 m_pl\cos\theta & m_pl^2
 \end{bmatrix}
-\begin{bmatrix}\ddot{x}\\\ddot{\theta}\end{bmatrix}
+\begin{bmatrix}\ddot{x}\cr\ddot{\theta}\end{bmatrix}
 +
-\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\\0\end{bmatrix}
+\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\cr0\end{bmatrix}
 =
-\begin{bmatrix}u\\-m_pgl\sin\theta\end{bmatrix}.
+\begin{bmatrix}u\cr-m_pgl\sin\theta\end{bmatrix}.
 $$
 
 ## Despeje de las aceleraciones
@@ -389,7 +389,7 @@ La matriz adjunta se obtiene intercambiando los términos diagonales y negando l
 $$
 \mathrm{adj}(M)=
 \begin{bmatrix}
-m_pl^2 & -m_pl\cos\theta\\[0pt]
+m_pl^2 & -m_pl\cos\theta\cr
 -m_pl\cos\theta & m_c+m_p
 \end{bmatrix}.
 $$
@@ -403,7 +403,7 @@ $$
 M(q)^{-1}=
 \frac{1}{m_pl^2(m_c+m_p\sin^2\theta)}
 \begin{bmatrix}
-m_pl^2 & -m_pl\cos\theta\\[0pt]
+m_pl^2 & -m_pl\cos\theta\cr
 -m_pl\cos\theta & m_c+m_p
 \end{bmatrix}
 }
@@ -420,11 +420,11 @@ Primero calculamos el vector al que se aplica la inversa:
 $$
 \begin{aligned}
 \tau_g+Bu-C\dot q
-&=\begin{bmatrix}0\\-m_pgl\sin\theta\end{bmatrix}
-+\begin{bmatrix}u\\0\end{bmatrix}
--\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\\0\end{bmatrix}\\[0pt]
+&=\begin{bmatrix}0\cr-m_pgl\sin\theta\end{bmatrix}
++\begin{bmatrix}u\cr0\end{bmatrix}
+-\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\cr0\end{bmatrix}\\[0pt]
 &=\boxed{\begin{bmatrix}
-u+m_pl\dot{\theta}^2\sin\theta\\[0pt]
+u+m_pl\dot{\theta}^2\sin\theta\cr
 -m_pgl\sin\theta
 \end{bmatrix}}.
 \end{aligned}
@@ -489,10 +489,10 @@ $$
 \boxed{
 \dot{s}=
 \begin{bmatrix}
-s_3\\[3pt]
-s_4\\[6pt]
+s_3\cr
+s_4\cr
 \dfrac{u+m_pls_4^2\sin s_2+m_pg\sin s_2\cos s_2}
-{m_c+m_p\sin^2s_2}\\[12pt]
+{m_c+m_p\sin^2s_2}\cr
 -\dfrac{u\cos s_2+m_pls_4^2\sin s_2\cos s_2+
 g(m_c+m_p)\sin s_2}
 {l(m_c+m_p\sin^2s_2)}
@@ -534,11 +534,11 @@ Para una matriz multiplicada por un vector:
 $$
 A(\theta)\,q =
 \begin{bmatrix}
-1 & \cos(\theta) \\
+1 & \cos(\theta) \cr
 \cos(\theta) & 1 + \cos^2(\theta)
 \end{bmatrix}
 \begin{bmatrix}
-x \\
+x \cr
 \theta
 \end{bmatrix}
 $$
@@ -549,11 +549,11 @@ Resultado:
 $$
 A(\theta)\,q =
 \begin{bmatrix}
-1 & \cos(\theta) \\[0pt]
+1 & \cos(\theta) \cr
 \cos(\theta) & 1 + \cos^2(\theta)
 \end{bmatrix}
 \begin{bmatrix}
-x \\[0pt]
+x \cr
 \theta
 \end{bmatrix}
 $$
