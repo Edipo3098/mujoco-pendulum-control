@@ -335,12 +335,7 @@ El modelo completo puede comprobarse multiplicando sus matrices:
 **Ecuación [23].**
 
 $$
-\begin{bmatrix}m_c+m_p & m_pl\cos\theta \cr m_pl\cos\theta & m_pl^2\end{bmatrix}
-\begin{bmatrix}\ddot{x} \cr \ddot{\theta}\end{bmatrix}
-+
-\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta \cr 0\end{bmatrix}
-=
-\begin{bmatrix}u \cr -m_pgl\sin\theta\end{bmatrix}.
+\begin{bmatrix}m_c+m_p & m_pl\cos\theta \cr m_pl\cos\theta & m_pl^2\end{bmatrix}\begin{bmatrix}\ddot{x}\cr\ddot{\theta}\end{bmatrix}+\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\cr 0\end{bmatrix}=\begin{bmatrix}u\cr-m_pgl\sin\theta\end{bmatrix}
 $$
 
 ## Despeje de las aceleraciones
