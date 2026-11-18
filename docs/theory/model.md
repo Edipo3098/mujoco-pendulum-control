@@ -88,14 +88,11 @@ La velocidad al cuadrado de la masa puntual es:
 **Ecuación [6].**
 
 $$
-\begin{aligned}
-\|\mathbf v_p\|^2
-&=(\dot{x}+l\dot{\theta}\cos\theta)^2+
-(l\dot{\theta}\sin\theta)^2\\[0pt]
-&=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta
-+l^2\dot{\theta}^2(\cos^2\theta+\sin^2\theta)\\[0pt]
-&=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta+l^2\dot{\theta}^2.
-\end{aligned}
+\begin{gathered}
+\|\mathbf v_p\|^2=(\dot{x}+l\dot{\theta}\cos\theta)^2+(l\dot{\theta}\sin\theta)^2 \cr
+=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta+l^2\dot{\theta}^2(\cos^2\theta+\sin^2\theta) \cr
+=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta+l^2\dot{\theta}^2
+\end{gathered}
 $$
 
 ### Energía cinética
@@ -105,16 +102,12 @@ Para cada masa puntual utilizamos $T=\frac12 m\|\mathbf v\|^2$. La energía cin�
 **Ecuación [7].**
 
 $$
-\begin{aligned}
-T_c&=\frac12m_c\dot{x}^2,\\[0pt]
-T_p&=\frac12m_p\dot{x}^2
-+m_pl\dot{x}\dot{\theta}\cos\theta
-+\frac12m_pl^2\dot{\theta}^2,\\[0pt]
-T&=T_c+T_p\\[0pt]
-&=\frac12(m_c+m_p)\dot{x}^2
-+m_pl\dot{x}\dot{\theta}\cos\theta
-+\frac12m_pl^2\dot{\theta}^2.
-\end{aligned}
+\begin{gathered}
+T_c=\frac12m_c\dot{x}^2 \cr
+T_p=\frac12m_p\dot{x}^2+m_pl\dot{x}\dot{\theta}\cos\theta+\frac12m_pl^2\dot{\theta}^2 \cr
+T=T_c+T_p \cr
+=\frac12(m_c+m_p)\dot{x}^2+m_pl\dot{x}\dot{\theta}\cos\theta+\frac12m_pl^2\dot{\theta}^2
+\end{gathered}
 $$
 
 El término cruzado no conserva un factor $\frac12$: al desarrollar el binomio aparece $2\dot{x}l\dot{\theta}\cos\theta$, que cancela ese factor. El término cruzado representa el acoplamiento entre traslación y rotación.
@@ -181,14 +174,11 @@ La derivada temporal requiere la regla del producto y la regla de la cadena:
 **Ecuación [12].**
 
 $$
-\begin{aligned}
+\begin{gathered}
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot{x}}\right)
-&=(m_c+m_p)\ddot{x}
-+m_pl\frac{d}{dt}(\dot{\theta}\cos\theta)\\[0pt]
-&=(m_c+m_p)\ddot{x}
-+m_pl\ddot{\theta}\cos\theta
--m_pl\dot{\theta}^2\sin\theta.
-\end{aligned}
+=(m_c+m_p)\ddot{x}+m_pl\frac{d}{dt}(\dot{\theta}\cos\theta) \cr
+=(m_c+m_p)\ddot{x}+m_pl\ddot{\theta}\cos\theta-m_pl\dot{\theta}^2\sin\theta
+\end{gathered}
 $$
 
 Sustituyendo en Euler–Lagrange se obtiene la **primera ecuación de movimiento**:
@@ -210,12 +200,12 @@ Al calcular $\partial\mathcal L/\partial\theta$, las velocidades se mantienen co
 **Ecuación [14].**
 
 $$
-\begin{aligned}
+\begin{gathered}
 \frac{\partial\mathcal L}{\partial\theta}
-&=-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta,\\[0pt]
+=-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta \cr
 \frac{\partial\mathcal L}{\partial\dot{\theta}}
-&=m_pl\dot{x}\cos\theta+m_pl^2\dot{\theta}.
-\end{aligned}
+=m_pl\dot{x}\cos\theta+m_pl^2\dot{\theta}
+\end{gathered}
 $$
 
 La derivada temporal de la segunda expresión es:
@@ -234,12 +224,9 @@ Al sustituir ambas derivadas en Euler–Lagrange, los términos $-m_pl\dot{x}\do
 **Ecuación [16].**
 
 $$
-\begin{aligned}
-0={}&m_pl\ddot{x}\cos\theta
--m_pl\dot{x}\dot{\theta}\sin\theta
-+m_pl^2\ddot{\theta}\\[0pt]
-&-\left(-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta\right).
-\end{aligned}
+0=m_pl\ddot{x}\cos\theta-m_pl\dot{x}\dot{\theta}\sin\theta
++m_pl^2\ddot{\theta}
+-\left(-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta\right)
 $$
 
 La **segunda ecuación de movimiento** queda:
@@ -374,12 +361,11 @@ Aplicando $ad-bc$ a la matriz de inercia y usando $1-\cos^2\theta=\sin^2\theta$:
 **Ecuación [24].**
 
 $$
-\begin{aligned}
-\det M(q)
-&=(m_c+m_p)m_pl^2-(m_pl\cos\theta)^2\\[0pt]
-&=m_pl^2\left[m_c+m_p(1-\cos^2\theta)\right]\\[0pt]
-&=\boxed{m_pl^2(m_c+m_p\sin^2\theta)}.
-\end{aligned}
+\begin{gathered}
+\det M(q)=(m_c+m_p)m_pl^2-(m_pl\cos\theta)^2 \cr
+=m_pl^2\left[m_c+m_p(1-\cos^2\theta)\right] \cr
+=\boxed{m_pl^2(m_c+m_p\sin^2\theta)}
+\end{gathered}
 $$
 
 La matriz adjunta se obtiene intercambiando los términos diagonales y negando los no diagonales:
@@ -418,16 +404,13 @@ Primero calculamos el vector al que se aplica la inversa:
 **Ecuación [27].**
 
 $$
-\begin{aligned}
+\begin{gathered}
 \tau_g+Bu-C\dot q
-&=\begin{bmatrix}0\cr-m_pgl\sin\theta\end{bmatrix}
+=\begin{bmatrix}0\cr-m_pgl\sin\theta\end{bmatrix}
 +\begin{bmatrix}u\cr0\end{bmatrix}
--\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\cr0\end{bmatrix}\\[0pt]
-&=\boxed{\begin{bmatrix}
-u+m_pl\dot{\theta}^2\sin\theta\cr
--m_pgl\sin\theta
-\end{bmatrix}}.
-\end{aligned}
+-\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\cr0\end{bmatrix} \cr
+=\boxed{\begin{bmatrix}u+m_pl\dot{\theta}^2\sin\theta\cr-m_pgl\sin\theta\end{bmatrix}}
+\end{gathered}
 $$
 
 La primera fila de la adjunta produce el numerador $N_1$ y la segunda, $N_2$:
@@ -435,19 +418,23 @@ La primera fila de la adjunta produce el numerador $N_1$ y la segunda, $N_2$:
 **Ecuación [28].**
 
 $$
-\begin{aligned}
-N_1
-&=m_pl^2(u+m_pl\dot{\theta}^2\sin\theta)
-+(-m_pl\cos\theta)(-m_pgl\sin\theta)\\[0pt]
-&=m_pl^2u+m_p^2l^3\dot{\theta}^2\sin\theta
-+m_p^2gl^2\sin\theta\cos\theta,\\[5pt]
-N_2
-&=(-m_pl\cos\theta)(u+m_pl\dot{\theta}^2\sin\theta)
-+(m_c+m_p)(-m_pgl\sin\theta)\\[0pt]
-&=-m_plu\cos\theta
--m_p^2l^2\dot{\theta}^2\sin\theta\cos\theta
--m_pgl(m_c+m_p)\sin\theta.
-\end{aligned}
+\begin{gathered}
+N_1=m_pl^2(u+m_pl\dot{\theta}^2\sin\theta)
++(-m_pl\cos\theta)(-m_pgl\sin\theta) \cr
+=m_pl^2u+m_p^2l^3\dot{\theta}^2\sin\theta
++m_p^2gl^2\sin\theta\cos\theta
+\end{gathered}
+
+$$
+
+$$
+
+\begin{gathered}
+N_2=(-m_pl\cos\theta)(u+m_pl\dot{\theta}^2\sin\theta)
++(m_c+m_p)(-m_pgl\sin\theta) \cr
+=-m_plu\cos\theta-m_p^2l^2\dot{\theta}^2\sin\theta\cos\theta
+-m_pgl(m_c+m_p)\sin\theta
+\end{gathered}
 $$
 
 Dividiendo cada numerador entre $\det M$ y cancelando factores comunes, obtenemos el **modelo dinámico no lineal explícito**:
