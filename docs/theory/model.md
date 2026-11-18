@@ -145,16 +145,16 @@ Para cada coordenada generalizada $q_i$, con fuerza generalizada $Q_i$:
 
 **Ecuación [10].**
 
-$
+$$
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot q_i}\right)-\frac{\partial\mathcal L}{\partial q_i}=Q_i
-$
+$$
 
-$
+$$
 q=\begin{bmatrix}x \cr \theta\end{bmatrix},
 \qquad
 \begin{bmatrix}Q_x \cr Q_\theta\end{bmatrix}
 =\begin{bmatrix}u \cr 0\end{bmatrix}.
-$
+$$
 
 No se aplica un par directamente al péndulo, por lo que $Q_\theta=0$.
 
@@ -334,14 +334,14 @@ El modelo completo puede comprobarse multiplicando sus matrices:
 
 **Ecuación [23].**
 
-$
+$$
 \begin{bmatrix}m_c+m_p & m_pl\cos\theta \cr m_pl\cos\theta & m_pl^2\end{bmatrix}
 \begin{bmatrix}\ddot{x} \cr \ddot{\theta}\end{bmatrix}
 +
 \begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta \cr 0\end{bmatrix}
 =
 \begin{bmatrix}u \cr -m_pgl\sin\theta\end{bmatrix}.
-$
+$$
 
 ## Despeje de las aceleraciones
 
@@ -417,27 +417,27 @@ La primera fila de la adjunta produce el numerador $N_1$ y la segunda, $N_2$:
 
 Primera fila de la matriz adjunta:
 
-$
+$$
 N_1=m_pl^2(u+m_pl\dot{\theta}^2\sin\theta)+(-m_pl\cos\theta)(-m_pgl\sin\theta).
-$
+$$
 
 Simplificando:
 
-$
+$$
 N_1=m_pl^2u+m_p^2l^3\dot{\theta}^2\sin\theta+m_p^2gl^2\sin\theta\cos\theta.
-$
+$$
 
 Segunda fila de la matriz adjunta:
 
-$
+$$
 N_2=(-m_pl\cos\theta)(u+m_pl\dot{\theta}^2\sin\theta)+(m_c+m_p)(-m_pgl\sin\theta).
-$
+$$
 
 Simplificando:
 
-$
+$$
 N_2=-m_plu\cos\theta-m_p^2l^2\dot{\theta}^2\sin\theta\cos\theta-m_pgl(m_c+m_p)\sin\theta.
-$
+$$
 
 Dividiendo cada numerador entre $\det M$ y cancelando factores comunes, obtenemos el **modelo dinámico no lineal explícito**:
 
