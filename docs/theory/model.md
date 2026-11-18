@@ -22,9 +22,9 @@ Tomando el pivote como referencia vertical ($y=0$), la posición de la masa punt
 
 **Ecuación [1].**
 
-```math
+$$
 x_p=x+l\sin\theta,\qquad y_p=-l\cos\theta.
-```
+$$
 
 Así, $\theta=\pi/2$ sitúa el péndulo horizontal hacia la derecha.
 
@@ -32,11 +32,11 @@ Coordenadas generalizadas y orden del estado:
 
 **Ecuación [2].**
 
-```math
+$$
 q=\begin{bmatrix}x\\\theta\end{bmatrix},
 \qquad
 s=\begin{bmatrix}x\\\theta\\\dot{x}\\\dot{\theta}\end{bmatrix}.
-```
+$$
 
 El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el carro. La articulación del péndulo no está actuada.
 
@@ -50,9 +50,9 @@ El eje vertical es positivo hacia arriba. Denotamos por $g>0$ la magnitud de la 
 
 **Ecuación [3].**
 
-```math
+$$
 \mathbf{g}=\begin{bmatrix}0\\-g\end{bmatrix}.
-```
+$$
 
 ## Análisis dinámico
 
@@ -66,37 +66,37 @@ La posición del carro (representado a la altura del pivote) y la masa del pénd
 
 **Ecuación [4].**
 
-```math
+$$
 \mathbf r_c=\begin{bmatrix}x\\0\end{bmatrix},\qquad
 \mathbf r_p=\begin{bmatrix}x+l\sin\theta\\-l\cos\theta\end{bmatrix}.
-```
+$$
 
 Derivando respecto al tiempo y aplicando la regla de la cadena:
 
 **Ecuación [5].**
 
-```math
+$$
 \mathbf v_c=\begin{bmatrix}\dot{x}\\0\end{bmatrix},\qquad
 \mathbf v_p=\begin{bmatrix}
-\dot{x}+l\dot{\theta}\cos\theta\\
+\dot{x}+l\dot{\theta}\cos\theta\\[0pt]
 l\dot{\theta}\sin\theta
 \end{bmatrix}.
-```
+$$
 
 La velocidad al cuadrado de la masa puntual es:
 
 **Ecuación [6].**
 
-```math
+$$
 \begin{aligned}
 \|\mathbf v_p\|^2
 &=(\dot{x}+l\dot{\theta}\cos\theta)^2+
-(l\dot{\theta}\sin\theta)^2\\
+(l\dot{\theta}\sin\theta)^2\\[0pt]
 &=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta
-+l^2\dot{\theta}^2(\cos^2\theta+\sin^2\theta)\\
++l^2\dot{\theta}^2(\cos^2\theta+\sin^2\theta)\\[0pt]
 &=\dot{x}^2+2l\dot{x}\dot{\theta}\cos\theta+l^2\dot{\theta}^2.
 \end{aligned}
-```
+$$
 
 ### Energía cinética
 
@@ -104,18 +104,18 @@ Para cada masa puntual utilizamos $T=\frac12 m\|\mathbf v\|^2$. La energía cin�
 
 **Ecuación [7].**
 
-```math
+$$
 \begin{aligned}
-T_c&=\frac12m_c\dot{x}^2,\\
+T_c&=\frac12m_c\dot{x}^2,\\[0pt]
 T_p&=\frac12m_p\dot{x}^2
 +m_pl\dot{x}\dot{\theta}\cos\theta
-+\frac12m_pl^2\dot{\theta}^2,\\
-T&=T_c+T_p\\
++\frac12m_pl^2\dot{\theta}^2,\\[0pt]
+T&=T_c+T_p\\[0pt]
 &=\frac12(m_c+m_p)\dot{x}^2
 +m_pl\dot{x}\dot{\theta}\cos\theta
 +\frac12m_pl^2\dot{\theta}^2.
 \end{aligned}
-```
+$$
 
 El término cruzado no conserva un factor $\frac12$: al desarrollar el binomio aparece $2\dot{x}l\dot{\theta}\cos\theta$, que cancela ese factor. El término cruzado representa el acoplamiento entre traslación y rotación.
 
@@ -125,10 +125,10 @@ Tomando como referencia de altura el pivote, la energía potencial del carro es 
 
 **Ecuación [8].**
 
-```math
+$$
 U_c=0,\qquad U_p=-m_pgl\cos\theta,\qquad
 U=-m_pgl\cos\theta.
-```
+$$
 
 ### Lagrangiano
 
@@ -136,7 +136,7 @@ El lagrangiano es la diferencia entre energías cinética y potencial:
 
 **Ecuación [9].**
 
-```math
+$$
 \boxed{
 \mathcal L=T-U=
 \frac12(m_c+m_p)\dot{x}^2
@@ -144,7 +144,7 @@ El lagrangiano es la diferencia entre energías cinética y potencial:
 +\frac12m_pl^2\dot{\theta}^2
 +m_pgl\cos\theta
 }
-```
+$$
 
 ## Ecuaciones de movimiento mediante Euler–Lagrange
 
@@ -152,7 +152,7 @@ Para cada coordenada generalizada $q_i$, con fuerza generalizada $Q_i$:
 
 **Ecuación [10].**
 
-```math
+$$
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot q_i}\right)
 -\frac{\partial\mathcal L}{\partial q_i}=Q_i,
 \qquad
@@ -160,7 +160,7 @@ q=\begin{bmatrix}x\\\theta\end{bmatrix},
 \quad
 \begin{bmatrix}Q_x\\Q_\theta\end{bmatrix}
 =\begin{bmatrix}u\\0\end{bmatrix}.
-```
+$$
 
 No se aplica un par directamente al péndulo, por lo que $Q_\theta=0$.
 
@@ -170,38 +170,38 @@ El lagrangiano no depende explícitamente de la posición $x$, pero sí de su ve
 
 **Ecuación [11].**
 
-```math
+$$
 \frac{\partial\mathcal L}{\partial x}=0,\qquad
 \frac{\partial\mathcal L}{\partial\dot{x}}
 =(m_c+m_p)\dot{x}+m_pl\dot{\theta}\cos\theta.
-```
+$$
 
 La derivada temporal requiere la regla del producto y la regla de la cadena:
 
 **Ecuación [12].**
 
-```math
+$$
 \begin{aligned}
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot{x}}\right)
 &=(m_c+m_p)\ddot{x}
-+m_pl\frac{d}{dt}(\dot{\theta}\cos\theta)\\
++m_pl\frac{d}{dt}(\dot{\theta}\cos\theta)\\[0pt]
 &=(m_c+m_p)\ddot{x}
 +m_pl\ddot{\theta}\cos\theta
 -m_pl\dot{\theta}^2\sin\theta.
 \end{aligned}
-```
+$$
 
 Sustituyendo en Euler–Lagrange se obtiene la **primera ecuación de movimiento**:
 
 **Ecuación [13].**
 
-```math
+$$
 \boxed{
 (m_c+m_p)\ddot{x}
 +m_pl\cos\theta\,\ddot{\theta}
 -m_pl\sin\theta\,\dot{\theta}^2=u
 }
-```
+$$
 
 ### Movimiento del péndulo: coordenada $\theta$
 
@@ -209,56 +209,56 @@ Al calcular $\partial\mathcal L/\partial\theta$, las velocidades se mantienen co
 
 **Ecuación [14].**
 
-```math
+$$
 \begin{aligned}
 \frac{\partial\mathcal L}{\partial\theta}
-&=-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta,\\
+&=-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta,\\[0pt]
 \frac{\partial\mathcal L}{\partial\dot{\theta}}
 &=m_pl\dot{x}\cos\theta+m_pl^2\dot{\theta}.
 \end{aligned}
-```
+$$
 
 La derivada temporal de la segunda expresión es:
 
 **Ecuación [15].**
 
-```math
+$$
 \frac{d}{dt}\left(\frac{\partial\mathcal L}{\partial\dot{\theta}}\right)
 =m_pl\ddot{x}\cos\theta
 -m_pl\dot{x}\dot{\theta}\sin\theta
 +m_pl^2\ddot{\theta}.
-```
+$$
 
 Al sustituir ambas derivadas en Euler–Lagrange, los términos $-m_pl\dot{x}\dot{\theta}\sin\theta$ se cancelan:
 
 **Ecuación [16].**
 
-```math
+$$
 \begin{aligned}
 0={}&m_pl\ddot{x}\cos\theta
 -m_pl\dot{x}\dot{\theta}\sin\theta
-+m_pl^2\ddot{\theta}\\
++m_pl^2\ddot{\theta}\\[0pt]
 &-\left(-m_pl\dot{x}\dot{\theta}\sin\theta-m_pgl\sin\theta\right).
 \end{aligned}
-```
+$$
 
 La **segunda ecuación de movimiento** queda:
 
 **Ecuación [17].**
 
-```math
+$$
 \boxed{
 m_pl\cos\theta\,\ddot{x}
 +m_pl^2\ddot{\theta}
 +m_pgl\sin\theta=0
 }
-```
+$$
 
 Dividiendo entre $m_pl$, también puede escribirse como:
 
-```math
+$$
 \boxed{\ddot{x}\cos\theta+l\ddot{\theta}+g\sin\theta=0.}
-```
+$$
 
 ## Forma matricial del manipulador
 
@@ -266,11 +266,11 @@ Agrupamos los términos con aceleraciones, los dependientes de las velocidades, 
 
 **Ecuación [18].**
 
-```math
+$$
 \boxed{
 M(q)\ddot q+C(q,\dot q)\dot q=\tau_g(q)+Bu
 }
-```
+$$
 
 En esta notación, $M(q)$ es la matriz de inercia; $C(q,\dot q)\dot q$ agrupa los términos inerciales dependientes de las velocidades; $\tau_g(q)$ es el vector de fuerzas generalizadas debidas a la gravedad **ubicado en el lado derecho**; y $B$ distribuye la entrada $u$. Los argumentos entre paréntesis indican de qué variables depende cada función o matriz.
 
@@ -280,15 +280,15 @@ Identificamos los coeficientes de $\ddot{x}$ y $\ddot{\theta}$ en las ecuaciones
 
 **Ecuación [19].**
 
-```math
+$$
 \boxed{
 M(q)=
 \begin{bmatrix}
-m_c+m_p & m_pl\cos\theta\\
+m_c+m_p & m_pl\cos\theta\\[0pt]
 m_pl\cos\theta & m_pl^2
 \end{bmatrix}
 }
-```
+$$
 
 Es simétrica. Los términos fuera de la diagonal describen el acoplamiento dinámico entre carro y péndulo.
 
@@ -298,21 +298,21 @@ El término dependiente de la velocidad en la ecuación horizontal es $-m_pl\dot
 
 **Ecuación [20].**
 
-```math
+$$
 \boxed{
 C(q,\dot q)=
 \begin{bmatrix}
-0 & -m_pl\dot{\theta}\sin\theta\\
+0 & -m_pl\dot{\theta}\sin\theta\\[0pt]
 0 & 0
 \end{bmatrix},
 \qquad
 C(q,\dot q)\dot q=
 \begin{bmatrix}
--m_pl\dot{\theta}^2\sin\theta\\
+-m_pl\dot{\theta}^2\sin\theta\\[0pt]
 0
 \end{bmatrix}
 }
-```
+$$
 
 Esta elección de $C$ reproduce los términos del modelo; la representación matricial de $C$ no es única. No debe confundirse este término inercial con un rozamiento viscoso.
 
@@ -322,33 +322,33 @@ La gravedad se traslada al lado derecho de [18], por lo que su signo es negativo
 
 **Ecuación [21].**
 
-```math
+$$
 \boxed{
 \tau_g(q)=
 \begin{bmatrix}
 0\\-m_pgl\sin\theta
 \end{bmatrix}
 }
-```
+$$
 
 La entrada es una fuerza horizontal aplicada al carro; el pivote no recibe un par de control:
 
 **Ecuación [22].**
 
-```math
+$$
 \boxed{
 B=\begin{bmatrix}1\\0\end{bmatrix},
 \qquad u=F_x.
 }
-```
+$$
 
 El modelo completo puede comprobarse multiplicando sus matrices:
 
 **Ecuación [23].**
 
-```math
+$$
 \begin{bmatrix}
-m_c+m_p & m_pl\cos\theta\\
+m_c+m_p & m_pl\cos\theta\\[0pt]
 m_pl\cos\theta & m_pl^2
 \end{bmatrix}
 \begin{bmatrix}\ddot{x}\\\ddot{\theta}\end{bmatrix}
@@ -356,16 +356,16 @@ m_pl\cos\theta & m_pl^2
 \begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\\0\end{bmatrix}
 =
 \begin{bmatrix}u\\-m_pgl\sin\theta\end{bmatrix}.
-```
+$$
 
 ## Despeje de las aceleraciones
 
 Para simular la dinámica necesitamos despejar ambas aceleraciones:
 
-```math
+$$
 \ddot q=M(q)^{-1}
 \left[\tau_g(q)+Bu-C(q,\dot q)\dot q\right].
-```
+$$
 
 ### Determinante, adjunta e inversa de $M(q)$
 
@@ -373,41 +373,41 @@ Aplicando $ad-bc$ a la matriz de inercia y usando $1-\cos^2\theta=\sin^2\theta$:
 
 **Ecuación [24].**
 
-```math
+$$
 \begin{aligned}
 \det M(q)
-&=(m_c+m_p)m_pl^2-(m_pl\cos\theta)^2\\
-&=m_pl^2\left[m_c+m_p(1-\cos^2\theta)\right]\\
+&=(m_c+m_p)m_pl^2-(m_pl\cos\theta)^2\\[0pt]
+&=m_pl^2\left[m_c+m_p(1-\cos^2\theta)\right]\\[0pt]
 &=\boxed{m_pl^2(m_c+m_p\sin^2\theta)}.
 \end{aligned}
-```
+$$
 
 La matriz adjunta se obtiene intercambiando los términos diagonales y negando los no diagonales:
 
 **Ecuación [25].**
 
-```math
+$$
 \mathrm{adj}(M)=
 \begin{bmatrix}
-m_pl^2 & -m_pl\cos\theta\\
+m_pl^2 & -m_pl\cos\theta\\[0pt]
 -m_pl\cos\theta & m_c+m_p
 \end{bmatrix}.
-```
+$$
 
 Por tanto:
 
 **Ecuación [26].**
 
-```math
+$$
 \boxed{
 M(q)^{-1}=
 \frac{1}{m_pl^2(m_c+m_p\sin^2\theta)}
 \begin{bmatrix}
-m_pl^2 & -m_pl\cos\theta\\
+m_pl^2 & -m_pl\cos\theta\\[0pt]
 -m_pl\cos\theta & m_c+m_p
 \end{bmatrix}
 }
-```
+$$
 
 Como $m_c,m_p,l>0$, el determinante es positivo para cualquier $\theta$; la inversa existe en todas las configuraciones.
 
@@ -417,44 +417,44 @@ Primero calculamos el vector al que se aplica la inversa:
 
 **Ecuación [27].**
 
-```math
+$$
 \begin{aligned}
 \tau_g+Bu-C\dot q
 &=\begin{bmatrix}0\\-m_pgl\sin\theta\end{bmatrix}
 +\begin{bmatrix}u\\0\end{bmatrix}
--\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\\0\end{bmatrix}\\
+-\begin{bmatrix}-m_pl\dot{\theta}^2\sin\theta\\0\end{bmatrix}\\[0pt]
 &=\boxed{\begin{bmatrix}
-u+m_pl\dot{\theta}^2\sin\theta\\
+u+m_pl\dot{\theta}^2\sin\theta\\[0pt]
 -m_pgl\sin\theta
 \end{bmatrix}}.
 \end{aligned}
-```
+$$
 
 La primera fila de la adjunta produce el numerador $N_1$ y la segunda, $N_2$:
 
 **Ecuación [28].**
 
-```math
+$$
 \begin{aligned}
 N_1
 &=m_pl^2(u+m_pl\dot{\theta}^2\sin\theta)
-+(-m_pl\cos\theta)(-m_pgl\sin\theta)\\
++(-m_pl\cos\theta)(-m_pgl\sin\theta)\\[0pt]
 &=m_pl^2u+m_p^2l^3\dot{\theta}^2\sin\theta
 +m_p^2gl^2\sin\theta\cos\theta,\\[5pt]
 N_2
 &=(-m_pl\cos\theta)(u+m_pl\dot{\theta}^2\sin\theta)
-+(m_c+m_p)(-m_pgl\sin\theta)\\
++(m_c+m_p)(-m_pgl\sin\theta)\\[0pt]
 &=-m_plu\cos\theta
 -m_p^2l^2\dot{\theta}^2\sin\theta\cos\theta
 -m_pgl(m_c+m_p)\sin\theta.
 \end{aligned}
-```
+$$
 
 Dividiendo cada numerador entre $\det M$ y cancelando factores comunes, obtenemos el **modelo dinámico no lineal explícito**:
 
 **Ecuación [29].**
 
-```math
+$$
 \boxed{
 \ddot{x}=
 \frac{
@@ -464,9 +464,9 @@ m_pg\sin\theta\cos\theta
 m_c+m_p\sin^2\theta
 }
 }
-```
+$$
 
-```math
+$$
 \boxed{
 \ddot{\theta}=
 -\frac{
@@ -477,7 +477,7 @@ g(m_c+m_p)\sin\theta
 l(m_c+m_p\sin^2\theta)
 }
 }
-```
+$$
 
 ## Espacio de estados no lineal
 
@@ -485,7 +485,7 @@ Con el orden ya definido en [2], $s=[x,\theta,\dot{x},\dot{\theta}]^T$, podemos 
 
 **Ecuación [30].**
 
-```math
+$$
 \boxed{
 \dot{s}=
 \begin{bmatrix}
@@ -499,7 +499,7 @@ g(m_c+m_p)\sin s_2}
 \end{bmatrix}
 =F(s,u).
 }
-```
+$$
 
 Los dos equilibrios verticales con el carro en $x=0$, velocidades nulas y entrada $u=0$ son:
 
@@ -524,9 +524,9 @@ $$
 
 Resultado:
 
-```math
+$$
 f(\theta) = a\cos^2(\theta) + b\sin(\theta)
-```
+$$
 
 Para una matriz multiplicada por un vector:
 
@@ -546,17 +546,17 @@ $$
 
 Resultado:
 
-```math
+$$
 A(\theta)\,q =
 \begin{bmatrix}
-1 & \cos(\theta) \\
+1 & \cos(\theta) \\[0pt]
 \cos(\theta) & 1 + \cos^2(\theta)
 \end{bmatrix}
 \begin{bmatrix}
-x \\
+x \\[0pt]
 \theta
 \end{bmatrix}
-```
+$$
 
 Referencias rápidas:
 
