@@ -2,7 +2,7 @@
 
 A hands-on control engineering project: model an underactuated cart-pole in MuJoCo and progressively implement energy-based swing-up, local stabilization, nonlinear control and model predictive control.
 
-**Status: project scaffold.** The repository currently contains the folder structure and a learning roadmap. Models, controllers, build configuration and experiments will be implemented incrementally.
+**Status: analytical modelling documented.** Ideal nonlinear dynamics, upright-equilibrium linearization and open-loop local stability analysis are documented. The MuJoCo model, build configuration, controllers and simulation validation remain to be implemented.
 
 ## Project goals
 
@@ -16,7 +16,7 @@ A hands-on control engineering project: model an underactuated cart-pole in MuJo
 
 An inverted pendulum on a moving cart, actuated by a horizontal force on the cart. The pendulum joint is unactuated.
 
-Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` at the downward position and positive angles counterclockwise in the x-right/y-up plane. The upright position is `theta = pi` modulo `2*pi`. See [model conventions](docs/theory/model.md). Coordinate signs, physical parameters and units must be checked against the MuJoCo model before designing a controller.
+Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` at the downward position and positive angles counterclockwise in the x-right/y-up plane. The upright position is `theta = pi` modulo `2*pi`. See [model conventions](docs/theory/01-dynamic-models.md). Coordinate signs, physical parameters and units must be checked against the MuJoCo model before designing a controller.
 
 ## Learning roadmap
 
@@ -32,7 +32,7 @@ Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` 
 
 Local stabilization is developed before the complete swing-up manoeuvre so the capture controller can be checked independently. Lyapunov methods are tools for stability analysis and control design; the specific nonlinear law will be selected after studying the underactuated dynamics.
 
-See the [step-by-step learning guide](docs/ROADMAP.md) (Spanish).
+See the [step-by-step learning guide](docs/ROADMAP.md) (Spanish). Theory: [01 — Dynamic Models](docs/theory/01-dynamic-models.md) and [02 — Linearization and Lyapunov's Indirect Method](docs/theory/02-linearization-and-stability.md). Provisional plant parameters: [config/cartpole-parameters.yaml](config/cartpole-parameters.yaml).
 
 ## Repository structure
 

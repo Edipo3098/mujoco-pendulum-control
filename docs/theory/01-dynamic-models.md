@@ -1,4 +1,6 @@
-# Modelado matemático del carro-péndulo
+# 01 — Dynamic Models
+
+Modelo dinámico no lineal del carro-péndulo ideal. La continuación es [02 — Linearization and Lyapunov's Indirect Method](02-linearization-and-stability.md).
 
 Este documento presenta las convenciones del sistema y el desarrollo de su modelo matemático.
 
@@ -42,7 +44,7 @@ El sistema tiene dos coordenadas generalizadas y una entrada de fuerza sobre el 
 
 Con esta convención, las posiciones verticales corresponden a $\theta=0$ (inferior) y $\theta=\pi$ (superior), módulo $2\pi$. En reposo, $\dot{x}=\dot{\theta}=0$; la comprobación de equilibrio deberá hacerse con las ecuaciones y el modelo MuJoCo.
 
-La masa puntual del péndulo está definida en la figura. Quedan pendientes los valores de masas y longitud, la gravedad, las unidades, el tratamiento de la masa/inercia de la barra, el rozamiento y los límites físicos. También falta contrastar ejes y signos con el modelo MJCF.
+La masa puntual del péndulo está definida en la figura. Los valores nominales provisionales de masas, longitud y gravedad figuran en [config/cartpole-parameters.yaml](../../config/cartpole-parameters.yaml). Siguen pendientes su validación en MuJoCo, el tratamiento de la masa/inercia de la barra, el rozamiento, los límites físicos y la comprobación de ejes y signos con el futuro MJCF.
 
 ## Aceleración de la gravedad
 
@@ -492,7 +494,7 @@ Los dos equilibrios verticales con el carro en $x=0$, velocidades nulas y entrad
 
 Por invariancia traslacional, otros valores constantes de $x$ también son posiciones de equilibrio. La estabilidad inferior indicada se refiere al ángulo del péndulo; sin rozamiento, no implica estabilidad asintótica del estado completo.
 
-La **linealización alrededor de $\theta=\pi$** y el diseño del controlador LQR quedan para la siguiente etapa: no forman parte de la derivación realizada aquí. Antes de contrastar este modelo con MuJoCo habrá que confirmar los parámetros, las inercias físicas, los ejes y el sentido angular del MJCF.
+La **linealización alrededor de $\theta=\pi$** y el método indirecto de Lyapunov se desarrollan en [02 — Linearization and Lyapunov's Indirect Method](02-linearization-and-stability.md). El diseño LQR sigue pendiente. Los parámetros, inercias, ejes y sentido angular aún deben contrastarse con MuJoCo.
 
 ## Apéndice: ejemplos de escritura matemática
 

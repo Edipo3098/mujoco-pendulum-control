@@ -2,16 +2,17 @@
 
 El objetivo es aprender implementando y explicar las decisiones con tus propias palabras. Cada etapa debe dejar una implementación pequeña, una comprobación y una nota sobre lo aprendido.
 
-El estado de cada etapa se mantiene en esta misma guía. La derivación matemática está documentada en [model.md](theory/model.md) y la preparación de herramientas en [ENVIRONMENT.md](ENVIRONMENT.md). Una casilla marcada indica solo la tarea descrita, no la validación completa de la etapa.
+El estado de cada etapa se mantiene en esta misma guía. La derivación matemática está documentada en [01 — Dynamic Models](theory/01-dynamic-models.md) y la preparación de herramientas en [ENVIRONMENT.md](ENVIRONMENT.md). Una casilla marcada indica solo la tarea descrita, no la validación completa de la etapa.
 
-**Estado al 17 de noviembre de 2026:** se ha desarrollado analíticamente el modelo ideal no lineal hasta su representación explícita en espacio de estados. No se ha confirmado aún la ejecución ni la validación del modelo en MuJoCo.
+**Estado al 19 de noviembre de 2026:** se ha completado la derivación analítica del modelo ideal no lineal, su linealización alrededor del equilibrio superior y el análisis de inestabilidad en lazo abierto mediante el método indirecto de Lyapunov. Hay parámetros numéricos nominales aún **sin validación** con MuJoCo. Ver [02 — Linearization and Lyapunov's Indirect Method](theory/02-linearization-and-stability.md).
 
 ## 1. Primera simulación
 
 - [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
 - [ ] Crear el modelo del carro y el péndulo en `models/`.
-- [ ] Fijar los **valores numéricos y unidades** de masas, longitud, gravedad e inercias para el MJCF. La notación, las hipótesis ideales (barra sin masa y masa puntual) y los parámetros simbólicos ya están documentados en [model.md](theory/model.md).
-- [x] Definir la **convención matemática**: eje x hacia la derecha, y hacia arriba; θ = 0 abajo y positivo antihorario; θ = π arriba. Véase [model.md](theory/model.md).
+- [x] Proponer **valores nominales provisionales y unidades** de masas, longitud y gravedad: [config/cartpole-parameters.yaml](../config/cartpole-parameters.yaml).
+- [ ] Contrastar la inercia, la geometría y los valores nominales con el futuro MJCF; aún no existe el modelo físico implementado.
+- [x] Definir la **convención matemática**: eje x hacia la derecha, y hacia arriba; θ = 0 abajo y positivo antihorario; θ = π arriba. Véase [01 — Dynamic Models](theory/01-dynamic-models.md).
 - [ ] Contrastar los ejes, el origen, el sentido del ángulo y la figura de coordenadas con el modelo MJCF real. La coherencia geométrica de la imagen requiere revisión independiente.
 - [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
@@ -23,7 +24,7 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 ## 2. Modelo dinámico
 
-**Resultado hasta ahora:** derivación simbólica completada para el Cart-Pole ideal, sin rozamiento, con barra rígida sin masa y masa puntual en el extremo. Está descrita paso a paso en [model.md](theory/model.md) (ecuaciones [1]–[30]). **La etapa 2 aún no está validada numéricamente.**
+**Resultado hasta ahora:** derivación simbólica completada para el Cart-Pole ideal, sin rozamiento, con barra rígida sin masa y masa puntual en el extremo. Está descrita paso a paso en [01 — Dynamic Models](theory/01-dynamic-models.md) (ecuaciones [1]–[30]). **La etapa 2 aún no está validada numéricamente.**
 
 - [x] Definir coordenadas generalizadas y orden del estado: `q = [x, θ]ᵀ`; `s = [x, θ, x_dot, theta_dot]ᵀ`, con entrada `u = F_x`.
 - [x] Derivar la cinemática: posiciones `x_p = x + l sin(θ)`, `y_p = -l cos(θ)` y las velocidades del carro y la masa puntual.
@@ -35,7 +36,7 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 - [x] Despejar ambas aceleraciones mediante la multiplicación matricial y la simplificación de sus numeradores `N₁` y `N₂`.
 - [x] Expresar las **cuatro ecuaciones no lineales de primer orden** `s_dot = F(s,u)`.
 - [x] Identificar analíticamente las configuraciones de equilibrio inferior `θ = 0` y superior `θ = π` con velocidades y fuerza nulas (para `x = 0` como posición de referencia).
-- [ ] Determinar valores físicos del modelo y comprobar la correspondencia de masas, inercia, fuerzas, ejes, signos y longitudes con el MJCF. Un modelo MuJoCo con barra de masa/inercia no despreciable no tiene por qué reproducir exactamente las ecuaciones ideales.
+- [ ] Verificar los valores físicos nominales y la correspondencia de masas, inercia, fuerzas, ejes, signos y longitudes con el MJCF. Un modelo MuJoCo con barra de masa/inercia no despreciable no tiene por qué reproducir exactamente las ecuaciones ideales.
 - [ ] Comparar las aceleraciones analíticas con las calculadas por MuJoCo en varios estados y entradas, con tolerancias y resultados reproducibles.
 - [ ] Comprobar conservación de energía cuando `u = 0` en el modelo ideal, y analizar pérdidas o diferencias numéricas cuando corresponda.
 - [ ] Documentar errores, discrepancias físicas y limitaciones del modelo a partir de esas pruebas.
@@ -44,7 +45,9 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 ## 3. Estabilización local
 
-- [ ] Linealizar alrededor del equilibrio superior y comprobar la controlabilidad.
+- [x] Obtener los puntos de equilibrio y linealizar el equilibrio superior mediante jacobianos, incluyendo las matrices $A$ y $B$: [derivación](theory/02-linearization-and-stability.md).
+- [x] Calcular los valores propios y demostrar la inestabilidad en lazo abierto mediante el método indirecto de Lyapunov.
+- [ ] Comprobar la **controlabilidad** del par $(A,B)$.
 - [ ] Elegir tiempo de muestreo y obtener el modelo discreto.
 - [ ] Diseñar el LQR y justificar las ponderaciones.
 - [ ] Verificar estabilidad del modelo lineal cerrado.

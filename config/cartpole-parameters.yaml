@@ -1,0 +1,24 @@
+# Nominal physical parameters for the ideal Cart-Pole analytical model.
+# Illustrative values chosen for analytical checks; NOT validated with MuJoCo.
+# No MJCF model or C++/Python configuration loader is implemented yet.
+schema_version: 1
+model: ideal_cartpole_point_mass
+validation_status: provisional_not_validated
+
+physical:
+  cart_mass_kg: 1.0                 # m_c > 0
+  pendulum_point_mass_kg: 0.1       # m_p > 0, concentrated at rod tip
+  pivot_to_point_mass_m: 0.5       # l > 0
+  gravity_m_per_s2: 9.81           # g > 0, gravity points downward
+
+assumptions:
+  rod_is_massless: true
+  pendulum_joint_actuated: false
+  friction_included: false
+  force_direction: positive_x
+  theta_zero_position: down
+  theta_positive_direction: counterclockwise
+  upright_angle_rad: 3.141592653589793
+
+# Before implementation, verify MJCF geometry, inertia, point mass,
+# coordinate conventions and gravity direction against the equations.
