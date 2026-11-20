@@ -1,111 +1,331 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from pathlib import Path
 import yaml
 
-# Directorio del script actual
-SCRIPT_DIR = Path(__file__).resolve().parent
 
-# Ruta del archivo YAML
+# ============================================================
+# 1. LOAD PHYSICAL PARAMETERS
+# ============================================================
+
+SCRIPT_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = SCRIPT_DIR.parent.parent / "config" / "cartpole-parameters.yaml"
 
-with open(CONFIG_PATH, 'r') as f:
-    try:
-        config = yaml.safe_load(f)
-    except yaml.YAMLError as exc:
-        print(exc)
+with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+    config = yaml.safe_load(f)
+
+m_c = config["physical"]["cart_mass_kg"]
+m_p = config["physical"]["pendulum_point_mass_kg"]
+l = config["physical"]["pivot_to_point_mass_m"]
+g = config["physical"]["gravity_m_per_s2"]
+
+theta_e = config["assumptions"]["upright_angle_rad"]
 
 print("Config loaded successfully.")
 
-m_c = config['physical']['cart_mass_kg']
-m_p = config['physical']['pendulum_point_mass_kg']
-l =   config['physical']['pivot_to_point_mass_m']
-g =  config['physical']['gravity_m_per_s2']
 
-theta_e = config['assumptions']['upright_angle_rad']
+# ============================================================
+# 2. NONLINEAR MODEL
+# ============================================================
 
-def cartpole_dynamics(t, state,mc,mp,L,g):
+def cartpole_dynamics(t, state, mc, mp, L, g):
     x, theta, x_dot, theta_dot = state
+
     U = 0.0
 
-       # Aceleración del carro
-    x_ddot = ( U +mp*np.sin(theta)*(L*theta_dot**2 +g*np.cos(theta)))/(mc +mp*np.sin(theta)**2)
-    theta_ddot = (-U*np.cos(theta) -mp*L*theta_dot**2*np.cos(theta)*np.sin(theta)-(mc+mp)*g*np.sin(theta))/(L*(mc+mp*np.sin(theta)**2))
+    denominator = mc + mp * np.sin(theta)**2
+
+    x_ddot = (
+        U
+        + mp * L * theta_dot**2 * np.sin(theta)
+        + mp * g * np.sin(theta) * np.cos(theta)
+    ) / denominator
+
+    theta_ddot = -(
+        U * np.cos(theta)
+        + mp * L * theta_dot**2 * np.sin(theta) * np.cos(theta)
+        + (mc + mp) * g * np.sin(theta)
+    ) / (L * denominator)
 
     return [x_dot, theta_dot, x_ddot, theta_ddot]
 
-initial_state = [0, theta_e + np.deg2rad(0), 0, 0]
 
-solution = solve_ivp(cartpole_dynamics, [0, 10], initial_state, args=(m_c, m_p, l, g),t_eval=np.linspace(0,10,1000),rtol=1e-10, atol=1e-10)
+# ============================================================
+# 3. LINEARIZED MODEL AROUND UPRIGHT EQUILIBRIUM
+# ============================================================
 
-if not solution.success:
-    raise RuntimeError(solution.message)
-
-time = solution.t
-theta = solution.y[1]
-
-# Convertimos el ángulo de radianes a grados
-theta_deg = np.rad2deg(theta)
-theta_e_deg = np.rad2deg(theta_e)
+A = np.array([
+    [0, 0,             1, 0],
+    [0, 0,             0, 1],
+    [0, m_p*g/m_c,     0, 0],
+    [0, g*(m_c+m_p)/(l*m_c), 0, 0]
+], dtype=float)
 
 
+def cartpole_linear_dynamics(t, delta_state, A):
+    return A @ delta_state
 
-# Extraemos las velocidades de la solución
-x_dot = solution.y[2]
-theta_dot = solution.y[3]
 
-# Energía cinética
-T = (
-    0.5 * (m_c + m_p) * x_dot**2
-    + m_p * l * x_dot * theta_dot * np.cos(theta)
-    + 0.5 * m_p * l**2 * theta_dot**2
+# ============================================================
+# 4. INITIAL CONDITIONS AND SIMULATION
+# ============================================================
+
+# Perturbation around the upright equilibrium
+initial_angle_deg = 10.0
+
+# Short time interval: linearization is valid locally
+t_start = 0.0
+t_end = 1.2
+
+time_eval = np.linspace(t_start, t_end, 1000)
+
+# Upright equilibrium
+equilibrium_state = np.array([0.0, theta_e, 0.0, 0.0])
+
+# Nonlinear initial state
+initial_state = equilibrium_state + np.array([
+    0.0,
+    np.deg2rad(initial_angle_deg),
+    0.0,
+    0.0
+])
+
+# Linearized initial perturbation
+initial_delta_state = initial_state - equilibrium_state
+
+
+# Nonlinear integration
+solution_nonlinear = solve_ivp(
+    cartpole_dynamics,
+    (t_start, t_end),
+    initial_state,
+    args=(m_c, m_p, l, g),
+    t_eval=time_eval,
+    rtol=1e-10,
+    atol=1e-12
 )
 
-# Energía potencial
-V = -m_p * g * l * np.cos(theta)
+# Linear integration
+solution_linear = solve_ivp(
+    cartpole_linear_dynamics,
+    (t_start, t_end),
+    initial_delta_state,
+    args=(A,),
+    t_eval=time_eval,
+    rtol=1e-10,
+    atol=1e-12
+)
 
-# Energía mecánica total
-E = T + V
+if not solution_nonlinear.success:
+    raise RuntimeError(solution_nonlinear.message)
 
-# Error respecto a la energía inicial
-energy_error = E - E[0]
+if not solution_linear.success:
+    raise RuntimeError(solution_linear.message)
 
-print(f"Initial energy: {E[0]:.12f} J")
-print(f"Maximum absolute energy error: {np.max(np.abs(energy_error)):.3e} J")
+time = solution_nonlinear.t
 
-# Gráfica del error de energía
-plt.figure(figsize=(10, 5))
-plt.plot(time, energy_error, label="Energy error")
+# Nonlinear state: [x, theta, x_dot, theta_dot]
+state_nonlinear = solution_nonlinear.y
 
-plt.axhline(0, color="red", linestyle="--", label="Ideal energy error")
+# Linear solution contains perturbations.
+delta_state_linear = solution_linear.y
 
-plt.xlabel("Time (s)")
-plt.ylabel("Energy error (J)")
-plt.title("Cart-Pole - Mechanical Energy Conservation")
-
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.show()
+# Convert the linear perturbations into physical states.
+state_linear = (
+    delta_state_linear + equilibrium_state[:, np.newaxis]
+)
 
 
-# Creamos la gráfica
-plt.figure(figsize=(10, 5))
+# ============================================================
+# 5. MECHANICAL ENERGY
+# ============================================================
 
-plt.plot(time, theta_deg, label="Nonlinear model")
-plt.axhline(
-    theta_e_deg,
+def mechanical_energy(state, mc, mp, L, g):
+    x, theta, x_dot, theta_dot = state
+
+    T = (
+        0.5 * (mc + mp) * x_dot**2
+        + mp * L * x_dot * theta_dot * np.cos(theta)
+        + 0.5 * mp * L**2 * theta_dot**2
+    )
+
+    V = -mp * g * L * np.cos(theta)
+
+    return T + V
+
+
+def linearized_energy(delta_state, mc, mp, L, g):
+    dx, dtheta, dx_dot, dtheta_dot = delta_state
+
+    # Quadratic Taylor approximation of mechanical energy
+    # around theta = pi, zero velocities.
+    T = (
+        0.5 * (mc + mp) * dx_dot**2
+        - mp * L * dx_dot * dtheta_dot
+        + 0.5 * mp * L**2 * dtheta_dot**2
+    )
+
+    V = (
+        mp * g * L
+        - 0.5 * mp * g * L * dtheta**2
+    )
+
+    return T + V
+
+
+# Physical mechanical energy of the nonlinear trajectory
+E_nonlinear = mechanical_energy(
+    state_nonlinear, m_c, m_p, l, g
+)
+
+# Physical energy formula evaluated on the linear trajectory
+E_linear_physical = mechanical_energy(
+    state_linear, m_c, m_p, l, g
+)
+
+# Quadratic energy approximation associated with linear dynamics
+E_linear_quadratic = linearized_energy(
+    delta_state_linear, m_c, m_p, l, g
+)
+
+
+# Energy deviations relative to each initial value
+error_nonlinear = E_nonlinear - E_nonlinear[0]
+error_linear_physical = E_linear_physical - E_linear_physical[0]
+error_linear_quadratic = E_linear_quadratic - E_linear_quadratic[0]
+
+print(
+    "Nonlinear energy max error:",
+    f"{np.max(np.abs(error_nonlinear)):.3e} J"
+)
+
+print(
+    "Linear quadratic energy max error:",
+    f"{np.max(np.abs(error_linear_quadratic)):.3e} J"
+)
+
+
+# ============================================================
+# 6. DYNAMICS COMPARISON
+# ============================================================
+
+fig, axes = plt.subplots(2, 2, figsize=(13, 8), sharex=True)
+
+labels = [
+    "Cart position (m)",
+    "Pendulum angle (deg)",
+    "Cart velocity (m/s)",
+    "Angular velocity (deg/s)"
+]
+
+titles = [
+    "Cart Position",
+    "Pendulum Angle",
+    "Cart Velocity",
+    "Angular Velocity"
+]
+
+for i, ax in enumerate(axes.flat):
+    nonlinear_values = state_nonlinear[i]
+    linear_values = state_linear[i]
+
+    # Convert angular values to degrees
+    if i in (1, 3):
+        nonlinear_values = np.rad2deg(nonlinear_values)
+        linear_values = np.rad2deg(linear_values)
+
+    ax.plot(time, nonlinear_values, label="Nonlinear")
+    ax.plot(
+        time,
+        linear_values,
+        linestyle="--",
+        label="Linearized"
+    )
+
+    if i == 1:
+        ax.axhline(
+            np.rad2deg(theta_e),
+            color="red",
+            linestyle=":",
+            label="Upright equilibrium"
+        )
+
+    ax.set_title(titles[i])
+    ax.set_ylabel(labels[i])
+    ax.grid(True)
+    ax.legend()
+
+for ax in axes[1]:
+    ax.set_xlabel("Time (s)")
+
+fig.suptitle("Cart-Pole - Nonlinear vs Linear Dynamics")
+fig.tight_layout()
+
+
+# ============================================================
+# 7. ENERGY COMPARISON
+# ============================================================
+
+fig_energy, energy_axes = plt.subplots(
+    2, 1, figsize=(12, 8), sharex=True
+)
+
+# Energy values
+energy_axes[0].plot(
+    time, E_nonlinear,
+    label="Nonlinear - physical energy"
+)
+
+energy_axes[0].plot(
+    time, E_linear_physical,
     linestyle="--",
-    color="red",
-    label="Upright equilibrium"
+    label="Linear trajectory - physical energy"
 )
 
-plt.xlabel("Time (s)")
-plt.ylabel("Angle (deg)")
-plt.title("Cart-Pole - Nonlinear Angular Dynamics")
+energy_axes[0].plot(
+    time, E_linear_quadratic,
+    linestyle=":",
+    label="Linear - quadratic energy"
+)
 
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
+energy_axes[0].set_ylabel("Energy (J)")
+energy_axes[0].set_title("Mechanical Energy")
+energy_axes[0].grid(True)
+energy_axes[0].legend()
+
+
+# Energy conservation errors
+energy_axes[1].plot(
+    time, error_nonlinear,
+    label="Nonlinear energy error"
+)
+
+energy_axes[1].plot(
+    time, error_linear_physical,
+    linestyle="--",
+    label="Physical energy on linear trajectory"
+)
+
+energy_axes[1].plot(
+    time, error_linear_quadratic,
+    linestyle=":",
+    label="Linear quadratic energy error"
+)
+
+energy_axes[1].axhline(
+    0, color="red", linestyle="--",
+    label="Zero energy error"
+)
+
+energy_axes[1].set_xlabel("Time (s)")
+energy_axes[1].set_ylabel("Energy difference (J)")
+energy_axes[1].set_title("Energy Conservation Error")
+energy_axes[1].grid(True)
+energy_axes[1].legend()
+
+fig_energy.suptitle("Cart-Pole - Energy Comparison")
+fig_energy.tight_layout()
+
 plt.show()
