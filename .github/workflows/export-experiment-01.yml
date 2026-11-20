@@ -1,0 +1,51 @@
+name: Export Experiment 01 Results
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/model_analysis/01_compare_dynamics.py'
+      - 'config/cartpole-parameters.yaml'
+      - '.github/workflows/export-experiment-01.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: python -m pip install numpy scipy matplotlib pyyaml
+
+      - name: Generate and save experiment plots
+        env:
+          MPLBACKEND: Agg
+          CARTPOLE_PLOT_DIR: results/01_dynamics_comparison
+        shell: bash
+        run: |
+          for angle in 0 1 10; do
+            CARTPOLE_INITIAL_ANGLE_DEG="$angle" python scripts/model_analysis/01_compare_dynamics.py
+          done
+
+      - name: Commit reproducible plots
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/01_dynamics_comparison/
+          if git diff --cached --quiet; then
+            echo "No plot changes"
+          else
+            git commit -m "results: export experiment 01 dynamics and energy plots"
+            git push origin HEAD:main
+          fi

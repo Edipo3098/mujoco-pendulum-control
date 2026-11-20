@@ -1,4 +1,5 @@
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
@@ -73,7 +74,7 @@ def cartpole_linear_dynamics(t, delta_state, A):
 # ============================================================
 
 # Perturbation around the upright equilibrium
-initial_angle_deg = 10.0
+initial_angle_deg = float(os.environ.get("CARTPOLE_INITIAL_ANGLE_DEG", "10.0"))
 
 # Short time interval: linearization is valid locally
 t_start = 0.0
@@ -327,5 +328,14 @@ energy_axes[1].legend()
 
 fig_energy.suptitle("Cart-Pole - Energy Comparison")
 fig_energy.tight_layout()
+
+# Optional: export reproducible images for the experiment results gallery.
+output_dir = os.environ.get("CARTPOLE_PLOT_DIR")
+if output_dir:
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    angle_label = format(initial_angle_deg, "g").replace(".", "p").replace("-", "m")
+    fig.savefig(output_path / f"angle_{angle_label}_dynamics.png", dpi=150)
+    fig_energy.savefig(output_path / f"angle_{angle_label}_energy.png", dpi=150)
 
 plt.show()

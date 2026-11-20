@@ -3,6 +3,10 @@ build/
 cmake-build-*/
 results/*
 !results/README.md
+# Versioned reproducible figures for Experiment 01
+!results/01_dynamics_comparison/
+!results/01_dynamics_comparison/README.md
+!results/01_dynamics_comparison/*.png
 MUJOCO_LOG.TXT
 
 # Python environments and caches
