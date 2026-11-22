@@ -15,7 +15,11 @@ import xml.etree.ElementTree as ET
 # 1. Read YAML
 
 class CartPoleModelBuilder:
-    def __init__(self, config_path="config/cartpole-parameters.yaml"):
+    def __init__(self, config_path="config/cartpole-parameters.yaml", initial_position="down"):
+        if initial_position not in ("down", "up"):
+            raise ValueError("initial_position must be \"down\" or \"up\"")
+
+        self.initial_position = initial_position
         self.config_path = config_path
         with open(self.config_path, "r", encoding="utf-8") as file:
             self.config = yaml.safe_load(file)
@@ -52,6 +56,19 @@ class CartPoleModelBuilder:
         # Gravity
         option = root.find("./option")
         option.set("gravity", f"0 0 {-self.g_nominal_m_s2}")
+
+        # Initial configuration: theta = 0 (down) or theta = pi (up)
+        upright_angle = self.config["assumptions"]["upright_angle_rad"]
+        initial_theta = 0.0 if self.initial_position == "down" else upright_angle
+        keyframe = root.find("./keyframe")
+        if keyframe is None:
+            keyframe = ET.SubElement(root, "keyframe")
+        initial_key = keyframe.find("./key[@name='initial']")
+        if initial_key is None:
+            initial_key = ET.SubElement(keyframe, "key", name="initial")
+        initial_key.set("qpos", f"0 {initial_theta}")
+        initial_key.set("qvel", "0 0")
+        initial_key.set("ctrl", "0")
 
         # 6. Save generated XML
         tree.write("models/cartpole_generated.xml")
