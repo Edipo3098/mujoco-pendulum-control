@@ -12,13 +12,13 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 - [x] **Comprobar la estructura y reinicio:** prueba comunicada por el autor con 2 grados de libertad, 1 actuador, tiempo inicial cero y lectura del estado \((0.2,\pi,0.1,0)\).
 - [x] **Ejecutar y visualizar movimiento pasivo:** ensayo comunicado desde \(\theta=\pi+1^\circ\), sin control, con paso físico de 1 ms, cámara configurable y reproducción ralentizada.
 - [x] **Separar el punto de entrada:** [`scripts/mujoco/simulation_example.py`](../scripts/mujoco/simulation_example.py) importa el generador y el simulador. Permite ejecutar desde la raíz: `python -m scripts.mujoco.simulation_example`.
-- [ ] **Verificar automáticamente la generación del XML:** probar varios parámetros YAML y comprobar que el XML resultante carga y conserva masas, gravedad, centros de masas y geometría esperados.
+- [x] **Comprobar la generación del XML con distintos parámetros YAML:** el autor confirma que el XML generado carga y refleja correctamente masas, gravedad, centros de masas y geometrías. Esta verificación funcional se da por completada; no se presupone que exista una suite automatizada de regresión.
 - [ ] **Completar la reproducibilidad del entorno:** fijar y documentar dependencias Python, instrucciones de instalación y ejecución independientes de VS Code; decidir y versionar una configuración de ejecución portable. Actualmente `.gitignore` excluye `.vscode/`.
 - [ ] **Preparar CMake y el ejecutable C++ de MuJoCo:** compilar, enlazar, cargar el modelo y ejecutar pasos de física. Esta será la base de los controladores C++.
 - [ ] **Probar también el movimiento pasivo desde una perturbación pequeña del equilibrio inferior** \(\theta=0\), además de los ensayos del superior.
 - [ ] **Registrar trazas reproducibles** con tiempo, posición del carro, ángulo, velocidades y fuerza (por ejemplo CSV), y representarlas con Python.
 
-**Estado de la etapa:** existen y están versionados el MJCF, el generador YAML→XML, el módulo Python del simulador y su ejemplo de uso. Las pruebas de ejecución del visor y del reinicio se han comunicado en esta conversación; **todavía no hay pruebas automatizadas ni una validación cuantitativa frente al modelo analítico**.
+**Estado de la etapa:** existen y están versionados el MJCF, el generador YAML→XML, el módulo Python del simulador y su ejemplo de uso. El autor confirma las pruebas funcionales de generación del XML con distintos parámetros, así como las pruebas del visor y del reinicio. **No constan pruebas automatizadas de regresión ni una validación cuantitativa frente al modelo analítico.** Las tareas restantes de infraestructura pueden completarse de forma incremental; el siguiente estudio teórico será la **controlabilidad**, seguido de la **realimentación de estado con asignación de polos** (etapa 3).
 
 **Criterio de avance:** modelo parametrizable y ejecutable, estados registrables, ejecución reproducible y primera integración C++ con MuJoCo. La validación de la dinámica física corresponde a la etapa 2.
 
