@@ -1,13 +1,13 @@
 # MuJoCo Pendulum Control
 
-A hands-on control engineering project: model an underactuated cart-pole in MuJoCo and progressively implement energy-based swing-up, local stabilization, nonlinear control and model predictive control.
+A hands-on control engineering project: model an underactuated cart-pole in MuJoCo, validate its dynamics, and develop LQR, nonlinear control, MPC and finally energy-based swing-up.
 
-**Status: analytical modelling documented.** Ideal nonlinear dynamics, upright-equilibrium linearization and open-loop local stability analysis are documented. The MuJoCo model, build configuration, controllers and simulation validation remain to be implemented.
+**Status: analytical model and first Python/MuJoCo simulation available.** Ideal nonlinear dynamics, upright-equilibrium linearization and open-loop stability analysis are documented. The repository includes an MJCF template, a YAML-to-XML model builder, a Python simulator and an execution example. Quantitative model validation, the C++ simulation loop and controllers are not yet completed.
 
 ## Project goals
 
-- Develop the simulation and controllers in **C++**.
-- Use **Python** for plots, experiment analysis and comparison.
+- Develop the final simulation loop and controllers in **C++**.
+- Use **Python** for YAML-to-MJCF generation, early MuJoCo validation, plots and experiment analysis.
 - Connect mathematical derivations with simulation results.
 - Compare controllers under consistent initial conditions, actuator limits and disturbances.
 - Document stability assumptions, practical limitations and reproducible experiments.
@@ -22,15 +22,16 @@ Proposed state convention: `s = [x, theta, x_dot, theta_dot]`, with `theta = 0` 
 
 | Stage | Scope | Planned evidence |
 | --- | --- | --- |
-| 1. Simulation foundation | MuJoCo setup, MJCF model, CMake and a C++ simulation loop | Passive motion, documented coordinates and state logs |
-| 2. Modelling | Equations of motion, equilibria and numerical validation | Analytical dynamics compared with MuJoCo |
-| 3. Local stabilization | Linearization and LQR around the upright equilibrium | Recovery from small perturbations |
-| 4. Swing-up | Energy-based control and handoff to the local stabilizer | Downward-to-upright demonstration |
-| 5. Nonlinear control | Lyapunov-based analysis/design and applicable feedback-linearization techniques | Explicit assumptions and a comparison with the baseline |
-| 6. Linear MPC | Discrete prediction model, cost and input/state constraints | Constraint handling and computation-time measurements |
-| 7. Optional nonlinear MPC | Nonlinear prediction model and solver evaluation | Benefits and costs compared with linear MPC |
+| 1. Simulation foundation | MJCF, YAML-to-XML generation, Python simulator, logs, CMake and C++ integration | Reproducible passive simulations and state traces |
+| 2. Modelling | Analytical equations and numerical validation against MuJoCo | Matched accelerations and energy checks |
+| 3. Local LQR stabilization | Controllability, LQR full-state feedback, C++ implementation | Local convergence of cart and pendulum near upright |
+| 4. Feedback linearization | Relative degree, output selection and internal/zero dynamics | Evidence-based decision whether a complete stabilizer is viable |
+| 5. Nonlinear Lyapunov design | Slotine-inspired stability analysis and justified nonlinear controller | Explicit hypotheses, local guarantees and comparison with LQR |
+| 6. Linear MPC | Discrete prediction, objective, constraints and solver | Feasibility and computation-time results vs. LQR |
+| 7. Nonlinear MPC | Nonlinear prediction, solver convergence and computational cost | Measured benefit or limitation vs. linear MPC |
+| 8. Swing-up (last) | Energy-based swing-up, capture region and switching to upright stabilizer | Demonstration from downward to upright with cart recovery |
 
-Local stabilization is developed before the complete swing-up manoeuvre so the capture controller can be checked independently. Lyapunov methods are tools for stability analysis and control design; the specific nonlinear law will be selected after studying the underactuated dynamics.
+LQR is a full-state feedback law, not an alternative to state feedback. An angle-only PID is not the baseline for stabilizing the complete cart-pole state. Feedback linearization and nonlinear Lyapunov design are studied with explicit attention to the underactuated internal dynamics, and implementations will proceed only when their assumptions support the stated objective. Swing-up remains the final integration stage.
 
 See the [step-by-step learning guide](docs/ROADMAP.md) (Spanish). Theory: [01 — Dynamic Models](docs/theory/01-dynamic-models.md) and [02 — Linearization and Lyapunov's Indirect Method](docs/theory/02-linearization-and-stability.md). Provisional plant parameters: [config/cartpole-parameters.yaml](config/cartpole-parameters.yaml).
 
@@ -61,7 +62,13 @@ git clone https://github.com/Edipo3098/mujoco-pendulum-control.git
 cd mujoco-pendulum-control
 ```
 
-Start with **Stage 1** in the learning guide. Build and run instructions will be added alongside the first working simulation. No controller or test results are claimed at this stage.
+For the existing Python demonstration, install `mujoco`, `numpy` and `pyyaml` in a project virtual environment and run from the repository root:
+
+```sh
+python -m scripts.mujoco.simulation_example
+```
+
+This generates an MJCF from the YAML parameters and launches the MuJoCo viewer. It does **not** run a controller or certify agreement with the analytical model. CMake/C++ build instructions and pinned dependencies remain pending; see [the roadmap](docs/ROADMAP.md).
 
 ## References
 
