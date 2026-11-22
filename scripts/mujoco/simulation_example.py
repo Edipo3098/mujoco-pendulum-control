@@ -23,7 +23,7 @@ sim.render()
 for i in range(steps):
     if not sim.viewer.is_running():
         break
-    sim.step(0.0)
+    x, theta, x_dot, theta_dot = sim.step(0.0)
     if i % 10 == 0:
         sim.render()
     time.sleep(dt / PLAYBACK_SPEED)
