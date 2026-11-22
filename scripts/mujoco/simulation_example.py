@@ -9,7 +9,11 @@ path = builder.build_model()
 
 sim = CartPoleSimulator(path)
 
-sim.reset()
+INITIAL_POSITION = "up"     # "up" o "down"
+PERTURBATION_DEG = 1.0     # Grados respecto al equilibrio
+
+theta_equilibrium = np.pi if INITIAL_POSITION == "up" else 0.0
+sim.reset(theta0=theta_equilibrium + np.deg2rad(PERTURBATION_DEG))  # Start with the pole in the upright position
 
 dt = sim.model.opt.timestep
 print("Simulation timestep:", dt, "seconds")

@@ -44,5 +44,5 @@
     <key name="upright" qpos="0 3.141592653589793" qvel="0 0" ctrl="0" />
 
     <key name="upright_1deg" qpos="0 3.159045946109736" qvel="0 0" ctrl="0" />
-  </keyframe>
+  <key name="initial" qpos="0 3.141592653589793" qvel="0 0" ctrl="0" /></keyframe>
 </mujoco>
