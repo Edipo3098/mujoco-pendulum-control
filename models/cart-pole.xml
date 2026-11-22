@@ -1,0 +1,100 @@
+
+<mujoco model="cartpole_ideal">
+  <compiler angle="radian"/>
+
+  <option timestep="0.001"
+          gravity="0 0 -9.81"
+          integrator="RK4"/>
+
+  <worldbody>
+    <light pos="0 0 3" dir="0 0 -1"/>
+
+    <!-- Visual rail: no collisions -->
+    <geom name="rail"
+          type="capsule"
+          size="0.02"
+          fromto="-2 0 0.85 2 0 0.85"
+          contype="0"
+          conaffinity="0"
+          rgba="0.5 0.5 0.5 1"/>
+
+    <!-- Cart: mc = 1.0 kg -->
+    <body name="cart" pos="0 0 1">
+      <joint name="slider"
+             type="slide"
+             axis="1 0 0"
+             damping="0"
+             frictionloss="0"
+             armature="0"/>
+
+      <geom name="cart_geom"
+            type="box"
+            size="0.2 0.1 0.1"
+            mass="1.0"
+            contype="0"
+            conaffinity="0"
+            rgba="0.2 0.6 0.8 1"/>
+
+      <!-- Pendulum: massless rod, point mass at l = 0.5 m -->
+      <body name="pole" pos="0 0 0">
+
+        <joint name="hinge"
+               type="hinge"
+               axis="0 -1 0"
+               damping="0"
+               frictionloss="0"
+               armature="0"/>
+
+        <!-- Approximate point-mass rotational inertia -->
+        <inertial pos="0 0 -0.5"
+                  mass="0.1"
+                  diaginertia="1e-8 1e-8 1e-8"/>
+
+        <!-- Massless visual rod -->
+        <geom name="pole_rod"
+              type="capsule"
+              size="0.01"
+              fromto="0 0 0 0 0 -0.5"
+              mass="0"
+              contype="0"
+              conaffinity="0"
+              rgba="0.8 0.3 0.2 1"/>
+
+        <!-- Visual representation of point mass -->
+        <geom name="pole_bob"
+              type="sphere"
+              pos="0 0 -0.5"
+              size="0.025"
+              mass="0"
+              contype="0"
+              conaffinity="0"
+              rgba="0.9 0.2 0.2 1"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Force input: ctrl directly represents Newtons -->
+  <actuator>
+    <motor name="cart_force"
+           joint="slider"
+           gear="1"/>
+  </actuator>
+
+  <!-- Initial configurations -->
+  <keyframe>
+    <key name="down"
+         qpos="0 0"
+         qvel="0 0"
+         ctrl="0"/>
+
+    <key name="upright"
+         qpos="0 3.141592653589793"
+         qvel="0 0"
+         ctrl="0"/>
+
+    <key name="upright_1deg"
+         qpos="0 3.159045946109736"
+         qvel="0 0"
+         ctrl="0"/>
+  </keyframe>
+</mujoco>
