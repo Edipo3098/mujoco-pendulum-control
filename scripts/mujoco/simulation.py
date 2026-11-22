@@ -22,12 +22,19 @@ class CartPoleSimulator:
         print("Degrees of freedom:", self.model.nv)
         print("Actuators:", self.model.nu)
 
-    def reset(self, x0=0.0, theta0=0.0, x_dot0=0.0, theta_dot0=0.0):
+    def reset(self, x0=0.0, theta0=None, x_dot0=0.0, theta_dot0=0.0):
 
-        mujoco.mj_resetData(self.model, self.data)
+        initial_key_id = mujoco.mj_name2id(
+            self.model, mujoco.mjtObj.mjOBJ_KEY, "initial"
+        )
+        if initial_key_id >= 0:
+            mujoco.mj_resetDataKeyframe(self.model, self.data, initial_key_id)
+        else:
+            mujoco.mj_resetData(self.model, self.data)
         # Initial positions
         self.data.joint("slider").qpos[0] = x0
-        self.data.joint("hinge").qpos[0] = theta0
+        if theta0 is not None:
+            self.data.joint("hinge").qpos[0] = theta0
 
         # Initial velocities
         self.data.joint("slider").qvel[0] = x_dot0
