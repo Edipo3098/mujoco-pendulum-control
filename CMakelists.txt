@@ -1,0 +1,18 @@
+
+cmake_minimum_required(VERSION 3.18)
+
+project(mujoco_pendulum_control LANGUAGES CXX C)
+
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
+
+pybind11_add_module(cartpole_control
+    src/bindings/bindings.cpp
+    src/controllers/StateFeedbackController.cpp
+)
+
+target_include_directories(cartpole_control PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)

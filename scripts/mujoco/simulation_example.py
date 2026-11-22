@@ -1,8 +1,18 @@
 from scripts.model.build_model import CartPoleModelBuilder
 from scripts.mujoco.simulation import CartPoleSimulator
+from cartpole_control import StateFeedbackController
+
 import numpy as np
 import time
 
+
+controller = StateFeedbackController()
+
+controller.setGains([1.0, 2.0, 3.0, 4.0])
+
+force = controller.computeControlInput([0.0, 0.0, 0.0, 0.0])
+
+print(force)
 
 builder = CartPoleModelBuilder(initial_position="up")
 path = builder.build_model()

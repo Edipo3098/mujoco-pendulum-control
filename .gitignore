@@ -1,5 +1,5 @@
 # Generated builds and results
-build/
+build-*/
 cmake-build-*/
 results/*
 !results/README.md
