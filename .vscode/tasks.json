@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: Configure (Windows)",
+            "type": "shell",
+            "command": "$pybind11Dir = & '${workspaceFolder}\\.venv\\Scripts\\python.exe' -m pybind11 --cmakedir; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; cmake -S '${workspaceFolder}' -B '${workspaceFolder}\\build' \"-Dpybind11_DIR=$pybind11Dir\" '-DPython_EXECUTABLE=${workspaceFolder}\\.venv\\Scripts\\python.exe'; exit $LASTEXITCODE",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "powershell.exe",
+                    "args": [
+                        "-NoProfile",
+                        "-ExecutionPolicy",
+                        "Bypass",
+                        "-Command"
+                    ]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: Build (Release)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--config",
+                "Release"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "CMake: Configure (Windows)",
+            "dependsOrder": "sequence"
+        }
+    ]
+}
