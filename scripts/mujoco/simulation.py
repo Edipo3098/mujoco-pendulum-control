@@ -6,7 +6,7 @@ import numpy as np
 class CartPoleSimulator:
     def __init__(self, model_path):
         ROOT = Path(__file__).resolve().parents[2]
-        MODEL_PATH = ROOT / "models" /  model_path
+        MODEL_PATH = ROOT /   model_path
         self.model = mujoco.MjModel.from_xml_path(str(MODEL_PATH))
         self.data = mujoco.MjData(self.model)
 
@@ -76,44 +76,44 @@ class CartPoleSimulator:
             self.viewer.close()
             self.viewer = None
 
+if __name__ == "__main__":
+    sim = CartPoleSimulator("cartpole_generated.xml")
 
-#sim = CartPoleSimulator("cartpole_generated.xml")
-#
-#sim.reset(
-#    x0=0.0,
-#    theta0=np.pi + np.deg2rad(1.0)
-#)
-#import time
-#
-#
-#dt = sim.model.opt.timestep
-#print("Simulation timestep:", dt, "seconds")
-#
-#SIMULATION_TIME = 10.0 # secods
-#PLAYBACK_SPEED = 0.5  # 50% of real-time speed
-#
-#steps = int(SIMULATION_TIME / dt)
-#
-#sim.render()
-#for i in range(steps):
-#
-#    if not sim.viewer.is_running():
-#        break
-#
-#    sim.step(0.0)
-#
-#    if i % 10 == 0:
-#        sim.render()
-#
-#    time.sleep(dt / PLAYBACK_SPEED)
-#
-## Display final simulation state
-#sim.render()
-#
-#print("Simulation finished. Close the viewer to exit.")
-#
-## Keep the viewer open
-#while sim.viewer.is_running():
-#    time.sleep(0.05)
-#
-#sim.close()
+    sim.reset(
+        x0=0.0,
+        theta0=np.pi + np.deg2rad(1.0)
+    )
+    import time
+
+
+    dt = sim.model.opt.timestep
+    print("Simulation timestep:", dt, "seconds")
+
+    SIMULATION_TIME = 10.0 # secods
+    PLAYBACK_SPEED = 0.5  # 50% of real-time speed
+
+    steps = int(SIMULATION_TIME / dt)
+
+    sim.render()
+    for i in range(steps):
+
+        if not sim.viewer.is_running():
+            break
+
+        sim.step(0.0)
+
+        if i % 10 == 0:
+            sim.render()
+
+        time.sleep(dt / PLAYBACK_SPEED)
+
+    # Display final simulation state
+    sim.render()
+
+    print("Simulation finished. Close the viewer to exit.")
+
+    # Keep the viewer open
+    while sim.viewer.is_running():
+        time.sleep(0.05)
+
+    sim.close()
