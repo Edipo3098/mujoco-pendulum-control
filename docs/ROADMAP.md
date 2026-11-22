@@ -41,25 +41,36 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 **Criterio de avance:** las aceleraciones y las propiedades energéticas calculadas con el modelo matemático se han contrastado con MuJoCo, y sus diferencias están medidas y explicadas. La derivación en papel **no equivale** a haber superado este criterio.
 
-## 3. Estabilización local mediante LQR (C++)
+## 3. Primer controlador: realimentación de estado y asignación de polos (C++)
 
-**Objetivo:** estabilizar **el estado completo** del Cart-Pole alrededor de \(s_e=[0,\pi,0,0]^T\), no solamente el ángulo. El punto de partida será LQR, sin implementar antes un PID angular ni un controlador independiente por asignación de polos.
-
-**Aclaración de diseño:** LQR **es una técnica de realimentación de estado completo**: \(u=-Ke\), con \(e=[x,\theta-\pi,\dot x,\dot\theta]^T\). La asignación de polos es otra manera de calcular \(K\), no una arquitectura de control distinta. El PID solo angular no garantiza que \(x\to0\).
+**Objetivo:** recuperar de forma gradual el diseño de control por realimentación del estado completo, antes de estudiar LQR. Queremos estabilizar \(s_e=[0,\pi,0,0]^T\), incluyendo la posición y velocidad del carro.
 
 - [x] Obtener los equilibrios y los jacobianos \(A\) y \(B\) del equilibrio superior: [derivación](theory/02-linearization-and-stability.md).
-- [x] Calcular los valores propios de lazo abierto y demostrar la inestabilidad del equilibrio superior mediante el método indirecto de Lyapunov.
-- [ ] **Documentar y reproducir la prueba de controlabilidad:** formar \(\mathcal C=[B,\ AB,\ A^2B,\ A^3B]\) y comprobar \(\mathrm{rank}(\mathcal C)=4\). Para las matrices nominales del documento de linealización, \(\det(\mathcal C)\approx-1539.7776\neq0\); **la realimentación de estado sí puede estabilizar localmente el modelo ideal**.
-- [ ] Estudiar y derivar LQR: coste \(J=\int_0^\infty(e^TQe+u^TRu)\,dt\), matriz de Riccati, ley \(u=-Ke\), dimensiones y selección razonada de \(Q,R\).
-- [ ] Calcular \(K\), comprobar que \(A-BK\) es Hurwitz y justificar la estabilidad local del modelo lineal en lazo cerrado.
-- [ ] Definir saturaciones de fuerza, período del controlador y la discretización necesaria para la implementación.
-- [ ] Implementar el controlador LQR en **C++**, desacoplado de MuJoCo, y conectarlo al bucle del simulador C++.
-- [ ] Evaluar pequeñas perturbaciones del estado completo en el modelo no lineal y en MuJoCo; registrar \(x,\theta-\pi,\dot x,\dot\theta,u\), error estacionario y tiempo de establecimiento.
-- [ ] Opcional: comparar el cálculo de ganancias LQR con asignación de polos **solo si aporta aprendizaje**, no como requisito previo.
+- [x] Calcular los valores propios de lazo abierto y demostrar la inestabilidad del equilibrio superior por el método indirecto de Lyapunov.
+- [ ] **Reproducir la prueba de controlabilidad:** formar \(\mathcal C=[B,\ AB,\ A^2B,\ A^3B]\), calcular su rango y explicar por qué \(\operatorname{rank}(\mathcal C)=4\) permite asignar polos. Para los parámetros nominales, \(\det(\mathcal C)\approx -1539.7776\ne0\); la comprobación analítica/numerica debe formar parte del experimento documentado.
+- [ ] Definir el estado de error \(e=[x,\theta-\pi,\dot x,\dot\theta]^T\) y derivar la dinámica en lazo cerrado con \(u=-Ke\).
+- [ ] Elegir polos cerrados deseados, calcular \(K\) mediante **asignación de polos** y estudiar los valores propios de \(A-BK\).
+- [ ] Explicar por qué este controlador estabiliza **localmente el estado completo** y por qué un PID aplicado solo al ángulo no garantiza \(x\to0\).
+- [ ] Definir período de control, límites de fuerza y saturación, y observar su efecto sobre el desempeño.
+- [ ] Implementar el controlador de realimentación en **C++**, separado de MuJoCo, y conectarlo con el simulador C++.
+- [ ] Probar perturbaciones pequeñas del equilibrio superior con el modelo no lineal y MuJoCo, registrando estados, fuerza, tiempo de establecimiento y errores.
 
-**Criterio de avance:** el sistema converge **localmente** al equilibrio completo para un conjunto de perturbaciones documentadas, con esfuerzo de control, saturación y límites de validez explícitos.
+**Criterio de avance:** poder deducir \(u=-Ke\), explicar y reproducir el cálculo de \(K\), y verificar estabilización **local** de las cuatro variables para perturbaciones documentadas. La asignación de polos es una técnica de realimentación de estado completo y sí es viable para el Cart-Pole ideal linealizado controlable.
 
-## 4. Linealización por realimentación (*feedback linearization*)
+## 4. LQR: elección óptima de las ganancias de estado (C++)
+
+**Objetivo:** partir de la misma arquitectura \(u=-Ke\) que ya funciona y estudiar una forma sistemática de calcular \(K\) mediante un criterio cuadrático.
+
+- [ ] Comprender la función de coste \(J=\int_0^\infty(e^TQe+u^TRu)\,dt\), los pesos \(Q,R\), la ecuación algebraica de Riccati y el cálculo de la ganancia \(K\).
+- [ ] Comprobar que \(A-BK\) es Hurwitz, justificar la estabilidad del modelo lineal y estudiar la relación con Lyapunov.
+- [ ] Evaluar el compromiso entre error angular, posición del carro, velocidad, esfuerzo de control y saturación.
+- [ ] Elegir período de muestreo y distinguir correctamente LQR continuo de LQR discreto cuando corresponda.
+- [ ] Implementar LQR en **C++** y probarlo en los mismos escenarios no lineales y de MuJoCo utilizados para la asignación de polos.
+- [ ] Comparar cuantitativamente ambos métodos sobre condiciones iniciales, restricciones y métricas idénticas.
+
+**Criterio de avance:** implementar un segundo estabilizador local basado en **la misma realimentación de estado**, explicando de dónde sale \(K\) y las diferencias reales frente a asignación de polos.
+
+## 5. Linealización por realimentación (*feedback linearization*)
 
 **Objetivo:** estudiar si una transformación no lineal de la entrada puede simplificar la dinámica y qué se pierde al hacerlo en un sistema **subactuado** (dos coordenadas y una sola fuerza).
 
@@ -72,7 +83,7 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 **Criterio de avance:** explicar con ecuaciones qué dinámica se linealiza, cuál permanece interna y por qué el método es o no adecuado para nuestro objetivo.
 
-## 5. Control no lineal y diseño basado en Lyapunov (Slotine)
+## 6. Control no lineal y diseño basado en Lyapunov (Slotine)
 
 **Objetivo:** diseñar o analizar una ley para el Cart-Pole no lineal utilizando el método directo de Lyapunov, con atención a la subactuación. Referencia: Slotine y Li, *Applied Nonlinear Control*.
 
@@ -85,7 +96,7 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 **Criterio de avance:** presentar \(V\), \(\dot V\), ley de control, hipótesis y conclusión matemática; distinguir inequívocamente lo demostrado de lo observado en MuJoCo.
 
-## 6. MPC lineal
+## 7. MPC lineal
 
 **Objetivo:** estabilizar el estado superior incorporando explícitamente restricciones de fuerza y desplazamiento, usando un modelo discreto.
 
@@ -97,7 +108,7 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 **Criterio de avance:** comportamiento reproducible con restricciones documentadas, solver estable y coste computacional compatible con el período de control.
 
-## 7. MPC no lineal (NMPC)
+## 8. MPC no lineal (NMPC)
 
 **Objetivo:** estudiar si la predicción con el modelo no lineal mejora el rango operativo o el cumplimiento de los objetivos frente al MPC lineal.
 
@@ -109,7 +120,7 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 **Criterio de avance:** justificar con datos cuándo NMPC aporta valor y cuándo su complejidad no compensa. Esta etapa se abordará **después** del MPC lineal.
 
-## 8. Swing-up e integración (última etapa)
+## 9. Swing-up e integración (última etapa)
 
 **Objetivo:** partir del equilibrio inferior, llevar el péndulo hasta la región de captura del estabilizador superior y mantener **el estado completo** cerca del objetivo.
 
