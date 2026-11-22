@@ -12,6 +12,8 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 - [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
 - [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
 
+**Avance en el entorno local (pendiente de incorporar y validar en el repositorio):** se ha probado un XML del Cart-Pole ideal y un módulo Python `CartPoleSimulator` con `reset`, lectura de estado, `step`, visor y cierre; también se ha ensayado la generación del XML desde parámetros YAML. Estos avances no sustituyen la validación física del MJCF ni la integración futura del control en C++.
+
 **Criterio de avance:** puedes ejecutar la simulación desde cero y explicar cada coordenada. Todavía no necesitas un controlador.
 
 Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos actuadores tiene?, ¿qué hace estable al equilibrio inferior?, ¿cómo afecta el paso de integración?
@@ -40,51 +42,65 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 **Criterio de avance:** las aceleraciones y las propiedades energéticas calculadas con el modelo matemático se han contrastado con MuJoCo, y sus diferencias están medidas y explicadas. La derivación en papel **no equivale** a haber superado este criterio.
 
-## 3. Estabilización local
+## 3. Estabilización local por realimentación de estado completo (C++)
 
-- [x] Obtener los puntos de equilibrio y linealizar el equilibrio superior mediante jacobianos, incluyendo las matrices $A$ y $B$: [derivación](theory/02-linearization-and-stability.md).
+**Objetivo:** mantener el péndulo cerca de \(\theta=\pi\) y llevar también \(x\), \(\dot x\) y \(\dot\theta\) hacia cero, usando únicamente la fuerza horizontal del carro.
+
+- [x] Obtener los puntos de equilibrio y linealizar el equilibrio superior mediante jacobianos, incluyendo las matrices \(A\) y \(B\): [derivación](theory/02-linearization-and-stability.md).
 - [x] Calcular los valores propios y demostrar la inestabilidad en lazo abierto mediante el método indirecto de Lyapunov.
-- [ ] Comprobar la **controlabilidad** del par $(A,B)$.
-- [ ] Elegir tiempo de muestreo y obtener el modelo discreto.
-- [ ] Diseñar el LQR y justificar las ponderaciones.
-- [ ] Verificar estabilidad del modelo lineal cerrado.
-- [ ] Probar pequeñas desviaciones en el sistema no lineal con saturación.
+- [ ] Comprobar la **controlabilidad** del par \((A,B)\), antes de diseñar las ganancias.
+- [ ] Definir el error \(e=[x,\ \theta-\pi,\ \dot x,\ \dot\theta]^T\) y estudiar la realimentación de estado \(u=-Ke\).
+- [ ] Diseñar \(K\) mediante **asignación de polos** y justificar los polos deseados, el esfuerzo de control y el desplazamiento del carro. **No empezar por LQR**.
+- [ ] Analizar la estabilidad del sistema lineal en lazo cerrado; usar, cuando proceda, una función cuadrática de Lyapunov \(V=e^TPe\).
+- [ ] Elegir el período de control, discretizar o justificar la implementación discreta y estudiar saturación de fuerza y sensibilidad a las condiciones iniciales.
+- [ ] Implementar el controlador en **C++**, independiente del simulador; validar primero sobre el modelo matemático y después frente a MuJoCo.
+- [ ] Registrar \(x(t)\), \(\theta(t)-\pi\), velocidades, fuerza, tiempo de establecimiento y condiciones iniciales para distintos ensayos.
+- [ ] Como comparación **opcional y posterior**, estudiar LQR; no es un requisito para comenzar.
 
-**Criterio de avance:** el péndulo recupera el equilibrio en un conjunto de condiciones iniciales documentado. No confundir estabilidad local con estabilidad global.
+**Decisión:** un PID aplicado únicamente al ángulo no constituye por sí solo un controlador del **estado completo**: puede corregir la inclinación sin garantizar que el carro vuelva a \(x=0\). No será la primera estrategia de este proyecto.
 
-## 4. Swing-up e integración
+**Criterio de avance:** para pequeñas perturbaciones documentadas, el estado completo converge localmente al equilibrio superior con fuerza y recorrido del carro medidos. Distinguir estabilidad del modelo lineal de la validación sobre el sistema no lineal.
 
-- [ ] Definir la energía objetivo y estudiar una ley de swing-up.
-- [ ] Resolver el arranque desde reposo en el equilibrio inferior.
-- [ ] Estudiar el desplazamiento del carro durante la maniobra.
-- [ ] Diseñar el cambio al estabilizador con condiciones de entrada/salida e histéresis.
-- [ ] Registrar fallos de captura y ajustar con criterios explícitos.
+## 4. Diseño de control basado en Lyapunov y estudio de Slotine
 
-**Criterio de avance:** una ejecución reproducible va desde abajo hasta el equilibrio superior y lo mantiene. Publicar una gráfica y una demostración.
+**Objetivo:** aprender a **diseñar y justificar** una ley de control, no solo a comprobar su comportamiento mediante simulaciones. Referencia de estudio: Slotine y Li, *Applied Nonlinear Control*, especialmente el método directo de Lyapunov y las técnicas de control no lineal aplicables.
 
-## 5. Control no lineal
+- [ ] Repasar estabilidad de Lyapunov, estabilidad asintótica, dominios de atracción y diferencias entre condiciones suficientes y observaciones numéricas.
+- [ ] Analizar la dinámica no lineal y la **subactuación** del Cart-Pole: dos coordenadas generalizadas y una sola entrada \(u\).
+- [ ] Elegir una función candidata \(V(e)\), justificar positividad y calcular \(\dot V\) a partir de las ecuaciones del modelo.
+- [ ] Estudiar si puede obtenerse una ley \(u(e)\) que garantice la condición requerida sobre \(\dot V\) **para el equilibrio completo**, sin suponer actuadores inexistentes.
+- [ ] Investigar las limitaciones de *feedback linearization*: salida elegida, grado relativo y dinámica interna, antes de adoptarla.
+- [ ] Implementar en **C++** solo un controlador cuya hipótesis y dominio de aplicación se hayan explicado.
+- [ ] Comparar el diseño no lineal con el estabilizador por realimentación de estado en escenarios idénticos de MuJoCo.
 
-- [ ] Elegir una técnica adecuada al sistema subactuado.
-- [ ] Proponer una función candidata de Lyapunov y estudiar su derivada.
-- [ ] Identificar hipótesis, singularidades y dominio de validez.
-- [ ] Si se utiliza linealización por realimentación, justificar qué salida o dinámica se linealiza y analizar la dinámica interna.
-- [ ] Comparar con swing-up + LQR usando los mismos escenarios.
+**Criterio de avance:** presentar una ley de control junto con sus hipótesis, derivación, condiciones de estabilidad y región de validez; distinguir expresamente lo demostrado de lo observado en simulación.
 
-**Criterio de avance:** explicar lo que el análisis garantiza y distinguirlo de lo observado en simulación.
-
-## 6. MPC lineal
+## 5. MPC lineal
 
 - [ ] Definir horizonte, coste, restricciones y estrategia ante problemas no factibles.
 - [ ] Elegir un solver y documentar sus dependencias.
 - [ ] Implementar el problema de optimización y la aplicación de la primera acción.
-- [ ] Medir tiempo de cálculo y compararlo con el periodo de control.
+- [ ] Medir tiempo de cálculo y compararlo con el período de control.
 - [ ] Evaluar fuerza y recorrido del carro, sin confundir límites solicitados con garantías fuera del modelo.
 
 **Criterio de avance:** el controlador resuelve los escenarios acordados, registra restricciones y gestiona fallos del solver.
 
-## 7. Extensión opcional: MPC no lineal
+## 6. Extensión opcional: MPC no lineal
 
 Incorporar predicción no lineal cuando exista una referencia lineal comprobada. Comparar coste computacional, convergencia y desempeño antes de decidir si aporta una mejora útil.
+
+## 7. Swing-up e integración (última etapa)
+
+**Objetivo:** llevar el péndulo desde el equilibrio inferior hasta la región de atracción de un estabilizador ya probado y mantenerlo arriba.
+
+- [ ] Definir la energía objetivo y estudiar una ley de *swing-up*.
+- [ ] Resolver el arranque desde reposo en el equilibrio inferior.
+- [ ] Estudiar el desplazamiento del carro y los límites de fuerza durante la maniobra.
+- [ ] Diseñar el cambio al estabilizador local con condiciones de entrada/salida e histéresis.
+- [ ] Registrar fallos de captura y ajustar con criterios explícitos.
+- [ ] Comparar escenarios reproducibles desde abajo hasta arriba, con registros y visualización.
+
+**Criterio de avance:** una ejecución reproducible va desde abajo hasta el equilibrio superior y lo mantiene. Publicar una gráfica y una demostración.
 
 ## Cómo pedir y usar la guía
 
