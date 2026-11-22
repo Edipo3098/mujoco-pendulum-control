@@ -25,7 +25,8 @@ __pycache__/
 *.pdb
 
 # Local editor/OS files
-.vscode/
+.vscode/*
+!.vscode/tasks.json
 .idea/
 *.code-workspace
 .DS_Store
