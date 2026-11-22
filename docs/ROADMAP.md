@@ -4,17 +4,21 @@ El objetivo es aprender implementando y explicar las decisiones con tus propias 
 
 ## 1. Primera simulación
 
-- [x] Elegir una versión de MuJoCo y documentar el entorno: MuJoCo / Studio 4.0.1 para Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md).
-- [ ] Crear el modelo del carro y el péndulo en `models/`.
-- [ ] Definir masas, inercias, longitud, gravedad y unidades. Notación de masas y longitud, masa puntual del péndulo y dirección del vector de gravedad documentadas en [model.md](theory/model.md); faltan valores, unidades y restantes hipótesis.
-- [x] Comprobar los ejes y el significado de los ángulos en el modelo matemático. Convención matemática definida en [model.md](theory/model.md): x hacia la derecha, y hacia arriba y θ = 0 abajo, positivo antihorario; figura corregida y coherente con la convención; falta contrastar con MuJoCo.
-- [ ] Preparar CMake y un ejecutable C++ que cargue el modelo.
-- [ ] Ejecutar movimiento pasivo desde una pequeña desviación de la posición inferior.
-- [ ] Guardar tiempo, posiciones y velocidades para representarlos después.
+- [x] **Elegir MuJoCo y documentar el entorno:** MuJoCo / Studio 4.0.1 en Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md). El autor ha comprobado también el paquete Python `mujoco` 4.0.1 en su entorno virtual.
+- [x] **Crear el Cart-Pole en MJCF:** la plantilla [`models/cart-pole.xml`](../models/cart-pole.xml) y un [XML generado](../models/cartpole_generated.xml) ya están en el repositorio. Incluyen carro, articulación prismática `slider`, bisagra `hinge`, péndulo y actuador `cart_force`.
+- [x] **Definir parámetros físicos nominales y unidades:** [`config/cartpole-parameters.yaml`](../config/cartpole-parameters.yaml) define \(m_c=1.0\ \mathrm{kg}\), \(m_p=0.1\ \mathrm{kg}\), \(l=0.5\ \mathrm{m}\) y \(g=9.81\ \mathrm{m/s^2}\). El MJCF usa amortiguamiento nulo, `gear="1"` y una inercia rotacional residual \(10^{-8}\ \mathrm{kg\,m^2}\) para aproximar la masa puntual. **Definidos no significa todavía validados frente a la dinámica analítica.**
+- [x] **Establecer la convención de coordenadas y comprobar la estructura del modelo:** \(s=[x,\theta,\dot x,\dot\theta]^T\), \(\theta=0\) abajo, \(\theta=\pi\) arriba; `slider` sobre +X y `hinge` sobre -Y. Se ha comprobado en Python que MuJoCo reconoce **2 grados de libertad y 1 actuador**, y que las coordenadas iniciales se leen correctamente. La equivalencia dinámica y de signos se comprobará cuantitativamente en la etapa 2.
+- [x] **Probar la inicialización y el reinicio:** el módulo [`CartPoleSimulator`](../scripts/mujoco/simulation.py) implementa `reset()`, lectura de estado, `step(force)`, visualización y cierre; se ha comprobado `data.time == 0` y la recuperación de un estado inicial conocido.
+- [x] **Ejecutar una primera simulación pasiva y visualizarla:** prueba local desde \(\theta=\pi+1^\circ\), con \(u=0\), mediante el visor pasivo de MuJoCo. Se ha ajustado cámara, paso de integración de \(0.001\,\mathrm{s}\) y reproducción más lenta; se ha observado la evolución en el visor.
+- [x] **Probar una primera generación XML desde YAML:** [`scripts/model/build_model.py`](../scripts/model/build_model.py) lee actualmente `cart_mass_kg` y modifica `cart_geom.mass`. Es una prueba funcional de concepto, **no** una parametrización completa.
+- [ ] **Completar la generación XML desde YAML:** transferir también masa del péndulo, longitud, posición del centro de masas y gravedad; evitar duplicación de parámetros y validar la correspondencia con el modelo ideal.
+- [ ] **Preparar CMake y un ejecutable C++** que compile, enlace MuJoCo y cargue el MJCF. El bucle de simulación y los controladores definitivos serán en C++; el módulo Python sirve para exploración y validación.
+- [ ] **Probar explícitamente el movimiento pasivo desde una pequeña perturbación del equilibrio inferior** \(\theta=0\), además del ensayo superior ya realizado.
+- [ ] **Guardar resultados reproducibles** (tiempo, \(x\), \(\theta\), \(\dot x\), \(\dot\theta\) y fuerza) en CSV u otro formato para generar gráficas y comparar simulaciones. Leer o imprimir estados no equivale a guardar una traza.
 
-**Avance en el entorno local (pendiente de incorporar y validar en el repositorio):** se ha probado un XML del Cart-Pole ideal y un módulo Python `CartPoleSimulator` con `reset`, lectura de estado, `step`, visor y cierre; también se ha ensayado la generación del XML desde parámetros YAML. Estos avances no sustituyen la validación física del MJCF ni la integración futura del control en C++.
+**Estado de la etapa:** el modelo MJCF, el lector inicial de YAML y el simulador Python están presentes en el repositorio; el autor ha confirmado el funcionamiento del visor, el reinicio y la simulación pasiva. **Pendientes:** parametrización completa, pruebas adicionales, registro de datos e integración C++/CMake. La validación física rigurosa se realiza en la etapa 2.
 
-**Criterio de avance:** puedes ejecutar la simulación desde cero y explicar cada coordenada. Todavía no necesitas un controlador.
+**Criterio de avance:** ejecutar una simulación reproducible, explicar coordenadas y unidades y obtener una traza temporal utilizable; para completar la base de desarrollo en C++, añadir el ejecutable con CMake. Todavía no se necesita un controlador.
 
 Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos actuadores tiene?, ¿qué hace estable al equilibrio inferior?, ¿cómo afecta el paso de integración?
 
