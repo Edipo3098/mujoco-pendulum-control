@@ -2,32 +2,27 @@
 
 El objetivo es aprender implementando y explicar las decisiones con tus propias palabras. Cada etapa debe dejar una implementación pequeña, una comprobación y una nota sobre lo aprendido.
 
-## 1. Primera simulación
+## 1. Primera simulación e infraestructura
 
-- [x] **Elegir MuJoCo y documentar el entorno:** MuJoCo / Studio 4.0.1 en Windows x64; ver [entorno de desarrollo](ENVIRONMENT.md). El autor ha comprobado también el paquete Python `mujoco` 4.0.1 en su entorno virtual.
-- [x] **Crear el Cart-Pole en MJCF:** la plantilla [`models/cart-pole.xml`](../models/cart-pole.xml) y un [XML generado](../models/cartpole_generated.xml) ya están en el repositorio. Incluyen carro, articulación prismática `slider`, bisagra `hinge`, péndulo y actuador `cart_force`.
-- [x] **Definir parámetros físicos nominales y unidades:** [`config/cartpole-parameters.yaml`](../config/cartpole-parameters.yaml) define \(m_c=1.0\ \mathrm{kg}\), \(m_p=0.1\ \mathrm{kg}\), \(l=0.5\ \mathrm{m}\) y \(g=9.81\ \mathrm{m/s^2}\). El MJCF usa amortiguamiento nulo, `gear="1"` y una inercia rotacional residual \(10^{-8}\ \mathrm{kg\,m^2}\) para aproximar la masa puntual. **Definidos no significa todavía validados frente a la dinámica analítica.**
-- [x] **Establecer la convención de coordenadas y comprobar la estructura del modelo:** \(s=[x,\theta,\dot x,\dot\theta]^T\), \(\theta=0\) abajo, \(\theta=\pi\) arriba; `slider` sobre +X y `hinge` sobre -Y. Se ha comprobado en Python que MuJoCo reconoce **2 grados de libertad y 1 actuador**, y que las coordenadas iniciales se leen correctamente. La equivalencia dinámica y de signos se comprobará cuantitativamente en la etapa 2.
-- [x] **Probar la inicialización y el reinicio:** el módulo [`CartPoleSimulator`](../scripts/mujoco/simulation.py) implementa `reset()`, lectura de estado, `step(force)`, visualización y cierre; se ha comprobado `data.time == 0` y la recuperación de un estado inicial conocido.
-- [x] **Ejecutar una primera simulación pasiva y visualizarla:** prueba local desde \(\theta=\pi+1^\circ\), con \(u=0\), mediante el visor pasivo de MuJoCo. Se ha ajustado cámara, paso de integración de \(0.001\,\mathrm{s}\) y reproducción más lenta; se ha observado la evolución en el visor.
-- [x] **Probar una primera generación XML desde YAML:** [`scripts/model/build_model.py`](../scripts/model/build_model.py) lee actualmente `cart_mass_kg` y modifica `cart_geom.mass`. Es una prueba funcional de concepto, **no** una parametrización completa.
-- [ ] **Completar la generación XML desde YAML:** transferir también masa del péndulo, longitud, posición del centro de masas y gravedad; evitar duplicación de parámetros y validar la correspondencia con el modelo ideal.
-- [ ] **Preparar CMake y un ejecutable C++** que compile, enlace MuJoCo y cargue el MJCF. El bucle de simulación y los controladores definitivos serán en C++; el módulo Python sirve para exploración y validación.
-- [ ] **Probar explícitamente el movimiento pasivo desde una pequeña perturbación del equilibrio inferior** \(\theta=0\), además del ensayo superior ya realizado.
-- [ ] **Guardar resultados reproducibles** (tiempo, \(x\), \(\theta\), \(\dot x\), \(\dot\theta\) y fuerza) en CSV u otro formato para generar gráficas y comparar simulaciones. Leer o imprimir estados no equivale a guardar una traza.
+- [x] **Preparar el entorno:** MuJoCo / Studio 4.0.1 en Windows x64, entorno virtual de Python y bindings `mujoco` comprobados. Ver [entorno de desarrollo](ENVIRONMENT.md).
+- [x] **Crear el modelo MJCF ideal:** plantilla [`models/cart-pole.xml`](../models/cart-pole.xml), con carro, articulaciones `slider` y `hinge`, péndulo de masa puntual aproximada y actuador de fuerza horizontal.
+- [x] **Fijar los parámetros nominales y la convención:** [`config/cartpole-parameters.yaml`](../config/cartpole-parameters.yaml) define masas, longitud y gravedad; \(\theta=0\) abajo, \(\theta=\pi\) arriba y \(s=[x,\theta,\dot x,\dot\theta]^T\). El MJCF introduce una inercia rotacional residual \(10^{-8}\ \mathrm{kg\,m^2}\); esta aproximación deberá cuantificarse en la etapa 2.
+- [x] **Generar el XML desde YAML:** [`CartPoleModelBuilder`](../scripts/model/build_model.py) transfiere masa del carro, masa del péndulo, longitud (centro de masas y geometrías visuales) y gravedad. Guarda `models/cartpole_generated.xml` y devuelve su ruta.
+- [x] **Implementar el simulador reutilizable en Python:** [`CartPoleSimulator`](../scripts/mujoco/simulation.py) carga el MJCF, permite reiniciar el tiempo y las condiciones iniciales, consultar el estado, aplicar fuerza con `step(force)`, visualizar y cerrar.
+- [x] **Comprobar la estructura y reinicio:** prueba comunicada por el autor con 2 grados de libertad, 1 actuador, tiempo inicial cero y lectura del estado \((0.2,\pi,0.1,0)\).
+- [x] **Ejecutar y visualizar movimiento pasivo:** ensayo comunicado desde \(\theta=\pi+1^\circ\), sin control, con paso físico de 1 ms, cámara configurable y reproducción ralentizada.
+- [x] **Separar el punto de entrada:** [`scripts/mujoco/simulation_example.py`](../scripts/mujoco/simulation_example.py) importa el generador y el simulador. Permite ejecutar desde la raíz: `python -m scripts.mujoco.simulation_example`.
+- [ ] **Verificar automáticamente la generación del XML:** probar varios parámetros YAML y comprobar que el XML resultante carga y conserva masas, gravedad, centros de masas y geometría esperados.
+- [ ] **Completar la reproducibilidad del entorno:** fijar y documentar dependencias Python, instrucciones de instalación y ejecución independientes de VS Code; decidir y versionar una configuración de ejecución portable. Actualmente `.gitignore` excluye `.vscode/`.
+- [ ] **Preparar CMake y el ejecutable C++ de MuJoCo:** compilar, enlazar, cargar el modelo y ejecutar pasos de física. Esta será la base de los controladores C++.
+- [ ] **Probar también el movimiento pasivo desde una perturbación pequeña del equilibrio inferior** \(\theta=0\), además de los ensayos del superior.
+- [ ] **Registrar trazas reproducibles** con tiempo, posición del carro, ángulo, velocidades y fuerza (por ejemplo CSV), y representarlas con Python.
 
-**Estado de la etapa:** el modelo MJCF, el lector inicial de YAML y el simulador Python están presentes en el repositorio; el autor ha confirmado el funcionamiento del visor, el reinicio y la simulación pasiva. **Pendientes:** parametrización completa, pruebas adicionales, registro de datos e integración C++/CMake. La validación física rigurosa se realiza en la etapa 2.
+**Estado de la etapa:** existen y están versionados el MJCF, el generador YAML→XML, el módulo Python del simulador y su ejemplo de uso. Las pruebas de ejecución del visor y del reinicio se han comunicado en esta conversación; **todavía no hay pruebas automatizadas ni una validación cuantitativa frente al modelo analítico**.
 
-**Criterio de avance:** ejecutar una simulación reproducible, explicar coordenadas y unidades y obtener una traza temporal utilizable; para completar la base de desarrollo en C++, añadir el ejecutable con CMake. Todavía no se necesita un controlador.
-
-Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos actuadores tiene?, ¿qué hace estable al equilibrio inferior?, ¿cómo afecta el paso de integración?
+**Criterio de avance:** modelo parametrizable y ejecutable, estados registrables, ejecución reproducible y primera integración C++ con MuJoCo. La validación de la dinámica física corresponde a la etapa 2.
 
 ## 2. Modelo dinámico
-
-- [ ] Derivar las ecuaciones y declarar las hipótesis: masa puntual o barra, rozamiento y ausencia/presencia de límites físicos. Avance: velocidades, energías cinética y potencial y lagrangiano desarrollados en [model.md](theory/model.md), con bloques numerados [1]–[9]. Pendientes: revisar el factor de longitud en la velocidad horizontal del bloque [4], la errata `\dot{x1}` en [6] y los cuadrados de velocidad de `Tp` y `Tc` en [7]; completar las hipótesis y obtener las ecuaciones de movimiento.
-- [x] Identificar las configuraciones de equilibrio y elegir una convención única para el estado. Orden del estado definido como [x, θ, x_dot, θ_dot]; posiciones inferior θ = 0 y superior θ = π documentadas, pendientes de verificar con las ecuaciones.
-- [ ] Comparar aceleraciones calculadas con las del simulador en varios estados.
-- [ ] Revisar conservación/disipación de energía con fuerza de entrada nula.
 
 - [x] Definir coordenadas generalizadas y orden del estado: `q = [x, θ]ᵀ`; `s = [x, θ, x_dot, theta_dot]ᵀ`, con entrada `u = F_x`.
 - [x] Derivar la cinemática: posiciones `x_p = x + l sin(θ)`, `y_p = -l cos(θ)` y las velocidades del carro y la masa puntual.
@@ -46,65 +41,86 @@ Preguntas para trabajar: ¿qué grados de libertad tiene el sistema?, ¿cuántos
 
 **Criterio de avance:** las aceleraciones y las propiedades energéticas calculadas con el modelo matemático se han contrastado con MuJoCo, y sus diferencias están medidas y explicadas. La derivación en papel **no equivale** a haber superado este criterio.
 
-## 3. Estabilización local por realimentación de estado completo (C++)
+## 3. Estabilización local mediante LQR (C++)
 
-**Objetivo:** mantener el péndulo cerca de \(\theta=\pi\) y llevar también \(x\), \(\dot x\) y \(\dot\theta\) hacia cero, usando únicamente la fuerza horizontal del carro.
+**Objetivo:** estabilizar **el estado completo** del Cart-Pole alrededor de \(s_e=[0,\pi,0,0]^T\), no solamente el ángulo. El punto de partida será LQR, sin implementar antes un PID angular ni un controlador independiente por asignación de polos.
 
-- [x] Obtener los puntos de equilibrio y linealizar el equilibrio superior mediante jacobianos, incluyendo las matrices \(A\) y \(B\): [derivación](theory/02-linearization-and-stability.md).
-- [x] Calcular los valores propios y demostrar la inestabilidad en lazo abierto mediante el método indirecto de Lyapunov.
-- [ ] Comprobar la **controlabilidad** del par \((A,B)\), antes de diseñar las ganancias.
-- [ ] Definir el error \(e=[x,\ \theta-\pi,\ \dot x,\ \dot\theta]^T\) y estudiar la realimentación de estado \(u=-Ke\).
-- [ ] Diseñar \(K\) mediante **asignación de polos** y justificar los polos deseados, el esfuerzo de control y el desplazamiento del carro. **No empezar por LQR**.
-- [ ] Analizar la estabilidad del sistema lineal en lazo cerrado; usar, cuando proceda, una función cuadrática de Lyapunov \(V=e^TPe\).
-- [ ] Elegir el período de control, discretizar o justificar la implementación discreta y estudiar saturación de fuerza y sensibilidad a las condiciones iniciales.
-- [ ] Implementar el controlador en **C++**, independiente del simulador; validar primero sobre el modelo matemático y después frente a MuJoCo.
-- [ ] Registrar \(x(t)\), \(\theta(t)-\pi\), velocidades, fuerza, tiempo de establecimiento y condiciones iniciales para distintos ensayos.
-- [ ] Como comparación **opcional y posterior**, estudiar LQR; no es un requisito para comenzar.
+**Aclaración de diseño:** LQR **es una técnica de realimentación de estado completo**: \(u=-Ke\), con \(e=[x,\theta-\pi,\dot x,\dot\theta]^T\). La asignación de polos es otra manera de calcular \(K\), no una arquitectura de control distinta. El PID solo angular no garantiza que \(x\to0\).
 
-**Decisión:** un PID aplicado únicamente al ángulo no constituye por sí solo un controlador del **estado completo**: puede corregir la inclinación sin garantizar que el carro vuelva a \(x=0\). No será la primera estrategia de este proyecto.
+- [x] Obtener los equilibrios y los jacobianos \(A\) y \(B\) del equilibrio superior: [derivación](theory/02-linearization-and-stability.md).
+- [x] Calcular los valores propios de lazo abierto y demostrar la inestabilidad del equilibrio superior mediante el método indirecto de Lyapunov.
+- [ ] **Documentar y reproducir la prueba de controlabilidad:** formar \(\mathcal C=[B,\ AB,\ A^2B,\ A^3B]\) y comprobar \(\mathrm{rank}(\mathcal C)=4\). Para las matrices nominales del documento de linealización, \(\det(\mathcal C)\approx-1539.7776\neq0\); **la realimentación de estado sí puede estabilizar localmente el modelo ideal**.
+- [ ] Estudiar y derivar LQR: coste \(J=\int_0^\infty(e^TQe+u^TRu)\,dt\), matriz de Riccati, ley \(u=-Ke\), dimensiones y selección razonada de \(Q,R\).
+- [ ] Calcular \(K\), comprobar que \(A-BK\) es Hurwitz y justificar la estabilidad local del modelo lineal en lazo cerrado.
+- [ ] Definir saturaciones de fuerza, período del controlador y la discretización necesaria para la implementación.
+- [ ] Implementar el controlador LQR en **C++**, desacoplado de MuJoCo, y conectarlo al bucle del simulador C++.
+- [ ] Evaluar pequeñas perturbaciones del estado completo en el modelo no lineal y en MuJoCo; registrar \(x,\theta-\pi,\dot x,\dot\theta,u\), error estacionario y tiempo de establecimiento.
+- [ ] Opcional: comparar el cálculo de ganancias LQR con asignación de polos **solo si aporta aprendizaje**, no como requisito previo.
 
-**Criterio de avance:** para pequeñas perturbaciones documentadas, el estado completo converge localmente al equilibrio superior con fuerza y recorrido del carro medidos. Distinguir estabilidad del modelo lineal de la validación sobre el sistema no lineal.
+**Criterio de avance:** el sistema converge **localmente** al equilibrio completo para un conjunto de perturbaciones documentadas, con esfuerzo de control, saturación y límites de validez explícitos.
 
-## 4. Diseño de control basado en Lyapunov y estudio de Slotine
+## 4. Linealización por realimentación (*feedback linearization*)
 
-**Objetivo:** aprender a **diseñar y justificar** una ley de control, no solo a comprobar su comportamiento mediante simulaciones. Referencia de estudio: Slotine y Li, *Applied Nonlinear Control*, especialmente el método directo de Lyapunov y las técnicas de control no lineal aplicables.
+**Objetivo:** estudiar si una transformación no lineal de la entrada puede simplificar la dinámica y qué se pierde al hacerlo en un sistema **subactuado** (dos coordenadas y una sola fuerza).
 
-- [ ] Repasar estabilidad de Lyapunov, estabilidad asintótica, dominios de atracción y diferencias entre condiciones suficientes y observaciones numéricas.
-- [ ] Analizar la dinámica no lineal y la **subactuación** del Cart-Pole: dos coordenadas generalizadas y una sola entrada \(u\).
-- [ ] Elegir una función candidata \(V(e)\), justificar positividad y calcular \(\dot V\) a partir de las ecuaciones del modelo.
-- [ ] Estudiar si puede obtenerse una ley \(u(e)\) que garantice la condición requerida sobre \(\dot V\) **para el equilibrio completo**, sin suponer actuadores inexistentes.
-- [ ] Investigar las limitaciones de *feedback linearization*: salida elegida, grado relativo y dinámica interna, antes de adoptarla.
-- [ ] Implementar en **C++** solo un controlador cuya hipótesis y dominio de aplicación se hayan explicado.
-- [ ] Comparar el diseño no lineal con el estabilizador por realimentación de estado en escenarios idénticos de MuJoCo.
+- [ ] Revisar las ecuaciones no lineales y expresar el sistema en la forma afín \(\dot s=f(s)+g(s)u\).
+- [ ] Elegir y justificar una salida (por ejemplo, \(x\) o \(\theta\)); calcular derivadas temporales, grado relativo y ley de linealización entrada–salida cuando sea válida.
+- [ ] Calcular la **dinámica interna o dinámica cero** y estudiar su estabilidad alrededor del equilibrio superior; identificar singularidades y dominio de validez.
+- [ ] Determinar si el controlador obtenido estabiliza realmente **las cuatro variables** o solo la salida elegida. No suponer que linealizar una salida equivale a estabilizar todo el sistema.
+- [ ] **Punto de decisión:** si la dinámica interna no permite la estabilización requerida, documentar la limitación y **no invertir tiempo en implementar esa ley como controlador completo**. Conservar el estudio teórico.
+- [ ] Solo si se justifica, implementar una alternativa útil en C++ y compararla con LQR bajo condiciones idénticas.
 
-**Criterio de avance:** presentar una ley de control junto con sus hipótesis, derivación, condiciones de estabilidad y región de validez; distinguir expresamente lo demostrado de lo observado en simulación.
+**Criterio de avance:** explicar con ecuaciones qué dinámica se linealiza, cuál permanece interna y por qué el método es o no adecuado para nuestro objetivo.
 
-## 5. MPC lineal
+## 5. Control no lineal y diseño basado en Lyapunov (Slotine)
 
-- [ ] Definir horizonte, coste, restricciones y estrategia ante problemas no factibles.
-- [ ] Elegir un solver y documentar sus dependencias.
-- [ ] Implementar el problema de optimización y la aplicación de la primera acción.
-- [ ] Medir tiempo de cálculo y compararlo con el período de control.
-- [ ] Evaluar fuerza y recorrido del carro, sin confundir límites solicitados con garantías fuera del modelo.
+**Objetivo:** diseñar o analizar una ley para el Cart-Pole no lineal utilizando el método directo de Lyapunov, con atención a la subactuación. Referencia: Slotine y Li, *Applied Nonlinear Control*.
 
-**Criterio de avance:** el controlador resuelve los escenarios acordados, registra restricciones y gestiona fallos del solver.
+- [ ] Estudiar estabilidad, estabilidad asintótica, invariancia, región de atracción y diferencias entre garantías locales y globales.
+- [ ] Proponer una función candidata \(V(e)\) apropiada para el **estado completo** y justificar cuándo es definida positiva.
+- [ ] Calcular \(\dot V\) usando la dinámica no lineal; investigar cómo puede influir la fuerza \(u\) en su signo sin asumir un actuador en la bisagra.
+- [ ] Estudiar las posibilidades de diseño (por ejemplo funciones de Lyapunov de control, enfoques basados en energía o pasividad), sus hipótesis y posibles restricciones.
+- [ ] **Punto de decisión:** si no se obtiene una ley con garantías útiles para nuestro objetivo, documentarlo sin convertirla forzosamente en un controlador de simulación.
+- [ ] Implementar en **C++** el diseño que resulte justificable y contrastarlo con LQR, incluyendo saturación, perturbaciones y región de funcionamiento.
 
-## 6. Extensión opcional: MPC no lineal
+**Criterio de avance:** presentar \(V\), \(\dot V\), ley de control, hipótesis y conclusión matemática; distinguir inequívocamente lo demostrado de lo observado en MuJoCo.
 
-Incorporar predicción no lineal cuando exista una referencia lineal comprobada. Comparar coste computacional, convergencia y desempeño antes de decidir si aporta una mejora útil.
+## 6. MPC lineal
 
-## 7. Swing-up e integración (última etapa)
+**Objetivo:** estabilizar el estado superior incorporando explícitamente restricciones de fuerza y desplazamiento, usando un modelo discreto.
 
-**Objetivo:** llevar el péndulo desde el equilibrio inferior hasta la región de atracción de un estabilizador ya probado y mantenerlo arriba.
+- [ ] Obtener \((A_d,B_d)\), definir período de muestreo, horizonte, referencias y restricciones de \(x\) y \(u\).
+- [ ] Establecer el coste, estudiar factibilidad y elegir un solver adecuado para la integración en C++.
+- [ ] Implementar el optimizador y aplicar únicamente la primera entrada en cada iteración.
+- [ ] Medir tiempo de cálculo, comportamiento ante soluciones no factibles y cumplimiento de restricciones.
+- [ ] Comparar con LQR sobre los mismos estados iniciales, modelo no lineal y límites de actuador.
 
-- [ ] Definir la energía objetivo y estudiar una ley de *swing-up*.
-- [ ] Resolver el arranque desde reposo en el equilibrio inferior.
-- [ ] Estudiar el desplazamiento del carro y los límites de fuerza durante la maniobra.
-- [ ] Diseñar el cambio al estabilizador local con condiciones de entrada/salida e histéresis.
-- [ ] Registrar fallos de captura y ajustar con criterios explícitos.
-- [ ] Comparar escenarios reproducibles desde abajo hasta arriba, con registros y visualización.
+**Criterio de avance:** comportamiento reproducible con restricciones documentadas, solver estable y coste computacional compatible con el período de control.
 
-**Criterio de avance:** una ejecución reproducible va desde abajo hasta el equilibrio superior y lo mantiene. Publicar una gráfica y una demostración.
+## 7. MPC no lineal (NMPC)
+
+**Objetivo:** estudiar si la predicción con el modelo no lineal mejora el rango operativo o el cumplimiento de los objetivos frente al MPC lineal.
+
+- [ ] Definir la dinámica discreta no lineal, coste, restricciones y método de integración.
+- [ ] Estudiar optimización no convexa, inicialización del solver, convergencia y tratamiento de fallos.
+- [ ] Implementar un prototipo y, si los resultados justifican el coste, integrarlo con el controlador C++.
+- [ ] Comparar NMPC, MPC lineal y LQR con condiciones iniciales, perturbaciones, restricciones y criterios idénticos.
+- [ ] Medir tiempo de optimización, calidad de solución y fallos, sin atribuir garantías globales a una validación numérica local.
+
+**Criterio de avance:** justificar con datos cuándo NMPC aporta valor y cuándo su complejidad no compensa. Esta etapa se abordará **después** del MPC lineal.
+
+## 8. Swing-up e integración (última etapa)
+
+**Objetivo:** partir del equilibrio inferior, llevar el péndulo hasta la región de captura del estabilizador superior y mantener **el estado completo** cerca del objetivo.
+
+- [ ] Definir energía objetivo y diseñar una ley de *swing-up* compatible con una sola fuerza horizontal.
+- [ ] Resolver el arranque desde reposo en el equilibrio inferior y evaluar saturación de fuerza y recorrido del carro.
+- [ ] Establecer una región de captura basada en las limitaciones observadas de los estabilizadores ya probados.
+- [ ] Diseñar la conmutación con condiciones de entrada/salida e histéresis para evitar cambios repetidos.
+- [ ] Validar ensayos reproducibles desde abajo hasta arriba, incluyendo fallos de captura, perturbaciones y métricas.
+- [ ] Publicar gráficas y una demostración de la integración completa.
+
+**Criterio de avance:** ejecución reproducible desde \(\theta=0\) hasta \(\theta\approx\pi\), con convergencia del carro y el péndulo al equilibrio objetivo dentro de los límites declarados.
 
 ## Cómo pedir y usar la guía
 
