@@ -53,6 +53,8 @@ class CartPoleSimulator:
         # Step the simulation
         mujoco.mj_step(self.model, self.data)
 
+        return self.getState()
+
     def render(self):
         if self.viewer is None:
             self.viewer = mujoco.viewer.launch_passive(
