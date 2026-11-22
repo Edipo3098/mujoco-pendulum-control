@@ -4,15 +4,12 @@ import numpy as np
 import time
 
 
-builder = CartPoleModelBuilder()
+builder = CartPoleModelBuilder(initial_position="up")
 path = builder.build_model()
 
 sim = CartPoleSimulator(path)
 
-sim.reset(
-    x0=0.0,
-    theta0=np.pi + np.deg2rad(1.0)
-)
+sim.reset()
 
 dt = sim.model.opt.timestep
 print("Simulation timestep:", dt, "seconds")
